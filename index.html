@@ -284,45 +284,85 @@
 </div>
 
 <script>
-  function renderData(data) {
-    document.getElementById('cliente-nome').innerText = data.cliente || "-";
-    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
-    document.getElementById('criterios-val').innerText = data.criterios || "-";
-    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
-    document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
-
-    let carsHtml = '';
-    if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
-    if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
-    if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
-    
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
-
-    const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
-    const pct = (currentStep / 5) * 100;
-
-    document.getElementById('progresso-pct').innerText = pct + '%';
-    document.getElementById('progresso-bar').style.width = pct + '%';
-
-    for (let i = 1; i <= 5; i++) {
-      const el = document.getElementById('step-' + i);
-      if(el) {
-        el.classList.remove('completed', 'active');
-        if (i < currentStep) el.classList.add('completed');
-        else if (i === currentStep) el.classList.add('active');
+  // Função para tratar o CSV respeitando aspas e vírgulas internas
+  function parseCSV(text) {
+    let p = '', c = '', r = [];
+    let q = false;
+    let row = [''];
+    for (let i = 0; i < text.length; i++) {
+      c = text[i];
+      p = text[i-1];
+      if (c === '"') {
+        if (q && text[i+1] === '"') { row[row.length - 1] += '"'; i++; }
+        else { q = !q; }
+      } else if (c === ',' && !q) {
+        row.push('');
+      } else if ((c === '\r' || c === '\n') && !q) {
+        if (c === '\r' && text[i+1] === '\n') { i++; }
+        r.push(row);
+        row = [''];
+      } else {
+        row[row.length - 1] += c;
       }
+    }
+    if (row.length > 1 || row[0] !== '') { r.push(row); }
+    return r;
+  }
+
+  async function carregarPlanilhaCSV() {
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=0&single=true&output=csv";
+
+    try {
+      const res = await fetch(csvUrl + "&t=" + new Date().getTime());
+      const text = await res.text();
+      const rows = parseCSV(text);
+
+      const cliente = rows[2] ? rows[2][1] : "-";
+      const orcamento = rows[3] ? rows[3][1] : "-";
+      const criterios = rows[4] ? rows[4][1] : "-";
+      const etapa = rows[5] ? rows[5][1] : "1";
+      const vistoria = rows[6] ? rows[6][1] : "-";
+
+      const c1 = rows[2] && rows[2][4] ? rows[2][4] + (rows[2][5] ? " (" + rows[2][5] + ")" : "") : "";
+      const c2 = rows[3] && rows[3][4] ? rows[3][4] + (rows[3][5] ? " (" + rows[3][5] + ")" : "") : "";
+      const c3 = rows[4] && rows[4][4] ? rows[4][4] + (rows[4][5] ? " (" + rows[4][5] + ")" : "") : "";
+
+      const obs = rows[18] ? rows[18][0] : "-";
+
+      document.getElementById('cliente-nome').innerText = cliente || "-";
+      document.getElementById('orcamento-val').innerText = orcamento || "-";
+      document.getElementById('criterios-val').innerText = criterios || "-";
+      document.getElementById('vistoria-status').innerText = vistoria || "-";
+      document.getElementById('obs-text').innerText = obs || "Sem observações no momento.";
+
+      let carsHtml = '';
+      if(c1) carsHtml += `<div class="car-item"><span class="car-name">${c1}</span></div>`;
+      if(c2) carsHtml += `<div class="car-item"><span class="car-name">${c2}</span></div>`;
+      if(c3) carsHtml += `<div class="car-item"><span class="car-name">${c3}</span></div>`;
+
+      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo em radar</span></div>';
+
+      const currentStep = parseInt(String(etapa).charAt(0)) || 1;
+      const pct = (currentStep / 5) * 100;
+
+      document.getElementById('progresso-pct').innerText = pct + '%';
+      document.getElementById('progresso-bar').style.width = pct + '%';
+
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById('step-' + i);
+        if(el) {
+          el.classList.remove('completed', 'active');
+          if (i < currentStep) el.classList.add('completed');
+          else if (i === currentStep) el.classList.add('active');
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao ler CSV:", err);
+      document.getElementById('cliente-nome').innerText = "Erro ao carregar dados";
     }
   }
 
-  // URL atualizada da nova implantação
-  const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
-
-  const script = document.createElement('script');
-  script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
-  script.onerror = function() {
-    document.getElementById('cliente-nome').innerText = "Erro ao conectar API";
-  };
-  document.body.appendChild(script);
+  carregarPlanilhaCSV();
 </script>
 
 </body>
