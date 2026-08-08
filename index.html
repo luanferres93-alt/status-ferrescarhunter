@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Ferres Car Hunter — Portal do Cliente</title>
   <style>
     :root {
@@ -216,7 +219,7 @@
       <span class="info-value" id="orcamento-val">Carregando...</span>
     </div>
     <div class="info-row">
-      <span class="info-label">CRITÉRIOS</span>
+      <span class="info-label">CRITÉRIOS DO PERFIL</span>
       <span class="info-value" id="criterios-val" style="font-size: 11px; color: #94a3b8;">Carregando...</span>
     </div>
     <div class="info-row" style="margin-top: 10px;">
@@ -314,11 +317,20 @@
     }
   }
 
-  const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
+  function carregarDados() {
+    const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
+    const script = document.createElement('script');
+    // Força uma URL totalmente única para obrigar o Chrome do celular a fazer a requisição
+    script.src = baseUrl + "?callback=renderData&rand=" + Math.random().toString(36).substring(2) + "&t=" + new Date().getTime();
+    document.body.appendChild(script);
+  }
 
-  const script = document.createElement('script');
-  script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
-  document.body.appendChild(script);
+  // Executa o carregamento assim que o documento estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', carregarDados);
+  } else {
+    carregarDados();
+  }
 </script>
 
 </body>
