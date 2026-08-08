@@ -114,9 +114,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     /* Lista de Carros */
@@ -299,7 +296,7 @@
 </div>
 
 <script>
-  // Link da API gerada pelo Apps Script
+  // Link da sua API
   const apiUrl = "https://script.google.com/macros/s/AKfycbzgdaz5o9UKyY0LrSwvJE2cgDAzaixPmPfYaJT0SWlB8jfUsEeJL8k6QehFzh--TC8ycw/exec";
 
   fetch(apiUrl)
@@ -311,7 +308,7 @@
       document.getElementById('vistoria-status').innerText = data.vistoria;
       document.getElementById('obs-text').innerText = data.obs;
 
-      // Monta os carros com o indicador de foco
+      // Monta a lista de carros dinamicamente
       let carsHtml = '';
       if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
       if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
@@ -319,7 +316,7 @@
       
       document.getElementById('cars-list').innerHTML = carsHtml;
 
-      // Atualiza progresso e etapas
+      // Progresso e Timeline
       const currentStep = parseInt(data.etapa.charAt(0)) || 1;
       const pct = (currentStep / 5) * 100;
 
