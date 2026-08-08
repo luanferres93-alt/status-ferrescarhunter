@@ -121,9 +121,10 @@
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #967718, #c9a227);
-      width: 60%;
+      width: 0%;
       border-radius: 20px;
       box-shadow: 0 0 12px var(--gold-glow);
+      transition: width 0.5s ease;
     }
     .section-title {
       font-size: 11px;
@@ -208,49 +209,49 @@
   <div class="client-card">
     <div class="info-row">
       <span class="info-label">Cliente</span>
-      <span class="info-value">Tamiris</span>
+      <span class="info-value" id="cliente-nome">Carregando...</span>
     </div>
     <div class="info-row">
       <span class="info-label">Carro-Alvo</span>
-      <span class="info-value car-tag">Hyundai Creta Pulse 1.6 2018</span>
+      <span class="info-value car-tag" id="carro-alvo">Carregando...</span>
     </div>
     <div class="info-row">
       <span class="info-label">Vistoria</span>
-      <span class="status-badge">Aguardando Vistoria</span>
+      <span class="status-badge" id="vistoria-status">Aguardando</span>
     </div>
   </div>
   <div class="progress-section">
     <div class="progress-header">
       <span class="progress-title">Progresso da Busca</span>
-      <span class="progress-pct">60%</span>
+      <span class="progress-pct" id="progresso-pct">0%</span>
     </div>
     <div class="progress-track">
-      <div class="progress-fill"></div>
+      <div class="progress-fill" id="progresso-bar"></div>
     </div>
   </div>
   <div class="section-title">📌 Linha do Tempo do Processo</div>
   <div class="timeline">
-    <div class="step completed">
+    <div class="step" id="step-1">
       <div class="step-dot"></div>
       <div class="step-name">1 - Pesquisando</div>
       <div class="step-desc">Buscando opções no mercado conforme seu perfil e orçamento</div>
     </div>
-    <div class="step completed">
+    <div class="step" id="step-2">
       <div class="step-dot"></div>
       <div class="step-name">2 - Carro-alvo detectado</div>
       <div class="step-desc">Seleção de um veículo de alto potencial para análise técnica</div>
     </div>
-    <div class="step active">
+    <div class="step" id="step-3">
       <div class="step-dot"></div>
       <div class="step-name">3 - Vistoria agendada</div>
       <div class="step-desc">Inspeção presencial e laudo cautelar agendados</div>
     </div>
-    <div class="step">
+    <div class="step" id="step-4">
       <div class="step-dot"></div>
       <div class="step-name">4 - Resultado da vistoria</div>
       <div class="step-desc">Aprovação técnica completa ou retomada da busca</div>
     </div>
-    <div class="step">
+    <div class="step" id="step-5">
       <div class="step-dot"></div>
       <div class="step-name">5 - Negócio fechado</div>
       <div class="step-desc">Negociação final, pagamento e entrega do veículo</div>
@@ -258,13 +259,43 @@
   </div>
   <div class="obs-box">
     <div class="obs-header">💬 Observação Tática / Próximo Passo</div>
-    <div class="obs-text">
-      Vistoria agendada para 10/08 às 14:00 em Santana. Vendedor confirmou presença no local.
-    </div>
+    <div class="obs-text" id="obs-text">Carregando dados da planilha...</div>
   </div>
   <div class="app-footer">
-    Ferres Car Hunter • Atualizado em tempo real
+    Ferres Car Hunter • Atualizado em tempo real via Google Sheets
   </div>
 </div>
+
+<script>
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnC6RAj6mg_EjOAe8pO6VJ_ACOi2VSErhWOL8yxV3d7XH8p_WucYPMOHjMifwk1XwOdqWmTdTneB6l/pub?output=csv";
+
+  fetch(sheetUrl)
+    .then(response => response.text())
+    .then(csvText => {
+      const rows = csvText.split('\n').map(row => row.split(','));
+      if(rows.length > 1) {
+        const data = rows[1];
+        if(data[0]) document.getElementById('cliente-nome').innerText = data[0].replace(/"/g, '');
+        if(data[1]) document.getElementById('carro-alvo').innerText = data[1].replace(/"/g, '');
+        
+        const etapa = data[2] ? data[2].replace(/"/g, '') : "1";
+        const currentStep = parseInt(etapa.charAt(0)) || 1;
+        
+        if(data[3]) document.getElementById('vistoria-status').innerText = data[3].replace(/"/g, '');
+        if(data[4]) document.getElementById('obs-text').innerText = data[4].replace(/"/g, '');
+
+        const pct = (currentStep / 5) * 100;
+        document.getElementById('progresso-pct').innerText = pct + '%';
+        document.getElementById('progresso-bar').style.width = pct + '%';
+
+        for(let i = 1; i <= 5; i++) {
+          const el = document.getElementById('step-' + i);
+          if(i < currentStep) el.classList.add('completed');
+          else if(i === currentStep) el.classList.add('active');
+        }
+      }
+    })
+    .catch(err => console.error("Erro ao carregar a planilha:", err));
+</script>
 </body>
 </html>
