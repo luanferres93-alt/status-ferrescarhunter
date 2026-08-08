@@ -213,7 +213,6 @@
     <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
   </div>
 
-  <!-- Card do Cliente -->
   <div class="info-card">
     <div class="info-row">
       <span class="info-label">Cliente</span>
@@ -233,7 +232,6 @@
     </div>
   </div>
 
-  <!-- Modelos em Radar com Foco -->
   <div class="info-card">
     <div class="section-title">🚘 Modelos em Radar & Foco</div>
     <div id="cars-list">
@@ -241,7 +239,6 @@
     </div>
   </div>
 
-  <!-- Barra de Progresso -->
   <div class="info-card">
     <div class="info-row">
       <span class="info-label">Progresso Geral</span>
@@ -252,7 +249,6 @@
     </div>
   </div>
 
-  <!-- Linha do Tempo -->
   <div class="info-card">
     <div class="section-title">📌 Linha do Tempo do Processo</div>
     <div class="timeline">
@@ -284,7 +280,6 @@
     </div>
   </div>
 
-  <!-- Observação Tática -->
   <div class="obs-box">
     <div class="section-title" style="margin-bottom: 4px;">💬 Observação Tática / Próximo Passo</div>
     <div class="obs-text" id="obs-text">Carregando dados...</div>
@@ -296,46 +291,41 @@
 </div>
 
 <script>
-  async function carregarDados() {
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxcJ_IgP9noQ8obQhz-dBf66abPqjmB6IEyQz0ymowiKUstMXAalC8D8i1uWZjx_V5jPQ/exec";
+  // Função que recebe a resposta do Apps Script via JSONP
+  function renderData(data) {
+    document.getElementById('cliente-nome').innerText = data.cliente || "-";
+    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
+    document.getElementById('criterios-val').innerText = data.criterios || "-";
+    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
+    document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
 
-    try {
-      const res = await fetch(apiUrl, { redirect: "follow" });
-      const data = await res.json();
+    let carsHtml = '';
+    if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
+    if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
+    if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
+    
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
 
-      document.getElementById('cliente-nome').innerText = data.cliente || "-";
-      document.getElementById('orcamento-val').innerText = data.orcamento || "-";
-      document.getElementById('criterios-val').innerText = data.criterios || "-";
-      document.getElementById('vistoria-status').innerText = data.vistoria || "-";
-      document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
+    const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
+    const pct = (currentStep / 5) * 100;
 
-      let carsHtml = '';
-      if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
-      if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
-      if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
-      
-      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+    document.getElementById('progresso-pct').innerText = pct + '%';
+    document.getElementById('progresso-bar').style.width = pct + '%';
 
-      const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
-      const pct = (currentStep / 5) * 100;
-
-      document.getElementById('progresso-pct').innerText = pct + '%';
-      document.getElementById('progresso-bar').style.width = pct + '%';
-
-      for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById('step-' + i);
-        if(el) {
-          el.classList.remove('completed', 'active');
-          if (i < currentStep) el.classList.add('completed');
-          else if (i === currentStep) el.classList.add('active');
-        }
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('step-' + i);
+      if(el) {
+        el.classList.remove('completed', 'active');
+        if (i < currentStep) el.classList.add('completed');
+        else if (i === currentStep) el.classList.add('active');
       }
-    } catch (err) {
-      console.error("Erro na requisição:", err);
     }
   }
 
-  carregarDados();
+  // Faz a chamada JSONP via inclusão de tag script
+  const script = document.createElement('script');
+  script.src = "https://script.google.com/macros/s/AKfycbxcJ_IgP9noQ8obQhz-dBf66abPqjmB6IEyQz0ymowiKUstMXAalC8D8i1uWZjx_V5jPQ/exec?callback=renderData&t=" + new Date().getTime();
+  document.body.appendChild(script);
 </script>
 
 </body>
