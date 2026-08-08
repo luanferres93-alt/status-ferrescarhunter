@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <title>Ferres Car Hunter — Portal do Cliente</title>
   <style>
     :root {
@@ -284,64 +285,72 @@
 </div>
 
 <script>
-  function renderGVizData(response) {
-    if(!response || !response.table) return;
-    const rows = response.table.rows;
+  async function carregarDadosUniversal() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/gviz/tq?tqx=out:json&t=" + new Date().getTime();
 
-    function getVal(r, c) {
-      if (rows[r] && rows[r].c && rows[r].c[c]) {
-        return rows[r].c[c].v || rows[r].c[c].f || "-";
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      
+      // O Google retorna os dados envelopados em "/*O_o*/ google.visualization.Query.setResponse(...);"
+      // O regex abaixo extrai apenas a estrutura de objeto JSON limpa
+      const jsonText = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/)[1];
+      const data = JSON.parse(jsonText);
+      const rows = data.table.rows;
+
+      function getVal(r, c) {
+        if (rows[r] && rows[r].c && rows[r].c[c]) {
+          return rows[r].c[c].v || rows[r].c[c].f || "-";
+        }
+        return "-";
       }
-      return "-";
-    }
 
-    const cliente = getVal(2, 1);   // B3
-    const orcamento = getVal(3, 1); // B4
-    const criterios = getVal(4, 1); // B5
-    const etapa = getVal(5, 1);     // B6
-    const vistoria = getVal(6, 1);  // B7
+      const cliente = getVal(2, 1);   // B3
+      const orcamento = getVal(3, 1); // B4
+      const criterios = getVal(4, 1); // B5
+      const etapa = getVal(5, 1);     // B6
+      const vistoria = getVal(6, 1);  // B7
 
-    const c1Name = getVal(2, 4), c1Status = getVal(2, 5); // E3, F3
-    const c2Name = getVal(3, 4), c2Status = getVal(3, 5); // E4, F4
-    const c3Name = getVal(4, 4), c3Status = getVal(4, 5); // E5, F5
+      const c1Name = getVal(2, 4), c1Status = getVal(2, 5); // E3, F3
+      const c2Name = getVal(3, 4), c2Status = getVal(3, 5); // E4, F4
+      const c3Name = getVal(4, 4), c3Status = getVal(4, 5); // E5, F5
 
-    const obs = getVal(18, 0); // A19
+      const obs = getVal(18, 0); // A19
 
-    document.getElementById('cliente-nome').innerText = cliente;
-    document.getElementById('orcamento-val').innerText = orcamento;
-    document.getElementById('criterios-val').innerText = criterios;
-    document.getElementById('vistoria-status').innerText = vistoria;
-    document.getElementById('obs-text').innerText = obs;
+      document.getElementById('cliente-nome').innerText = cliente;
+      document.getElementById('orcamento-val').innerText = orcamento;
+      document.getElementById('criterios-val').innerText = criterios;
+      document.getElementById('vistoria-status').innerText = vistoria;
+      document.getElementById('obs-text').innerText = obs;
 
-    let carsHtml = '';
-    if(c1Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c1Name} (${c1Status})</span></div>`;
-    if(c2Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c2Name} (${c2Status})</span></div>`;
-    if(c3Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c3Name} (${c3Status})</span></div>`;
+      let carsHtml = '';
+      if(c1Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c1Name} (${c1Status})</span></div>`;
+      if(c2Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c2Name} (${c2Status})</span></div>`;
+      if(c3Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c3Name} (${c3Status})</span></div>`;
 
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
 
-    const currentStep = parseInt(String(etapa).charAt(0)) || 1;
-    const pct = (currentStep / 5) * 100;
+      const currentStep = parseInt(String(etapa).charAt(0)) || 1;
+      const pct = (currentStep / 5) * 100;
 
-    document.getElementById('progresso-pct').innerText = pct + '%';
-    document.getElementById('progresso-bar').style.width = pct + '%';
+      document.getElementById('progresso-pct').innerText = pct + '%';
+      document.getElementById('progresso-bar').style.width = pct + '%';
 
-    for (let i = 1; i <= 5; i++) {
-      const el = document.getElementById('step-' + i);
-      if(el) {
-        el.classList.remove('completed', 'active');
-        if (i < currentStep) el.classList.add('completed');
-        else if (i === currentStep) el.classList.add('active');
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById('step-' + i);
+        if(el) {
+          el.classList.remove('completed', 'active');
+          if (i < currentStep) el.classList.add('completed');
+          else if (i === currentStep) el.classList.add('active');
+        }
       }
+    } catch (err) {
+      console.error("Erro no carregamento:", err);
+      document.getElementById('cliente-nome').innerText = "Erro ao carregar";
     }
   }
 
-  // Google Visualization API (Compatível com Safari/iOS sem bloqueios de privacidade)
-  const gvizUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/gviz/tq?tqx=responseHandler:renderGVizData&t=" + new Date().getTime();
-
-  const script = document.createElement('script');
-  script.src = gvizUrl;
-  document.body.appendChild(script);
+  carregarDadosUniversal();
 </script>
 
 </body>
