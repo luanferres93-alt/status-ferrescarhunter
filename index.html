@@ -208,19 +208,19 @@
 
   <div class="info-card">
     <div class="info-row">
-      <span class="info-label" id="lbl-cliente">CLIENTE</span>
+      <span class="info-label">CLIENTE</span>
       <span class="info-value" id="cliente-nome">Carregando...</span>
     </div>
     <div class="info-row">
-      <span class="info-label" id="lbl-orcamento">ORÇAMENTO</span>
+      <span class="info-label">ORÇAMENTO</span>
       <span class="info-value" id="orcamento-val">Carregando...</span>
     </div>
     <div class="info-row">
-      <span class="info-label" id="lbl-criterios">CRITÉRIOS DO PERFIL</span>
+      <span class="info-label">CRITÉRIOS DO PERFIL</span>
       <span class="info-value" id="criterios-val" style="font-size: 11px; color: #94a3b8;">Carregando...</span>
     </div>
     <div class="info-row" style="margin-top: 10px;">
-      <span class="info-label" id="lbl-vistoria">RESULTADO VISTORIA</span>
+      <span class="info-label">RESULTADO VISTORIA</span>
       <span class="status-badge" id="vistoria-status">Carregando...</span>
     </div>
   </div>
@@ -285,16 +285,10 @@
 
 <script>
   function renderData(data) {
-    // Atualiza Rótulos e Valores dinamicamente da planilha
-    if(data.lblCliente) document.getElementById('lbl-cliente').innerText = data.lblCliente;
-    if(data.lblOrcamento) document.getElementById('lbl-orcamento').innerText = data.lblOrcamento;
-    if(data.lblCriterios) document.getElementById('lbl-criterios').innerText = data.lblCriterios;
-    if(data.lblVistoria) document.getElementById('lbl-vistoria').innerText = data.lblVistoria;
-
-    document.getElementById('cliente-nome').innerText = data.valCliente || "-";
-    document.getElementById('orcamento-val').innerText = data.valOrcamento || "-";
-    document.getElementById('criterios-val').innerText = data.valCriterios || "-";
-    document.getElementById('vistoria-status').innerText = data.valVistoria || "-";
+    document.getElementById('cliente-nome').innerText = data.cliente || "-";
+    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
+    document.getElementById('criterios-val').innerText = data.criterios || "-";
+    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
     document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
 
     let carsHtml = '';
