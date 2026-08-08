@@ -291,7 +291,7 @@
 </div>
 
 <script>
-  // Função que recebe a resposta do Apps Script via JSONP
+  // Função Callback chamada pelo script JSONP
   function renderData(data) {
     document.getElementById('cliente-nome').innerText = data.cliente || "-";
     document.getElementById('orcamento-val').innerText = data.orcamento || "-";
@@ -322,7 +322,7 @@
     }
   }
 
-  // Faz a chamada JSONP via inclusão de tag script
+  // Requisição JSONP bypassando restrições de CORS
   const script = document.createElement('script');
   script.src = "https://script.google.com/macros/s/AKfycbxcJ_IgP9noQ8obQhz-dBf66abPqjmB6IEyQz0ymowiKUstMXAalC8D8i1uWZjx_V5jPQ/exec?callback=renderData&t=" + new Date().getTime();
   document.body.appendChild(script);
