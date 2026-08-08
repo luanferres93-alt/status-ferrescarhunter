@@ -279,49 +279,78 @@
   </div>
 
   <div class="app-footer">
-    Ferres Car Hunter • Atualizado em tempo real via Google Sheets
+    Ferres Car Hunter • Atualizado via Google Sheets
   </div>
 </div>
 
 <script>
-  function renderData(data) {
-    if(!data) return;
-
-    document.getElementById('cliente-nome').innerText = data.cliente || "-";
-    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
-    document.getElementById('criterios-val').innerText = data.criterios || "-";
-    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
-    document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
-
-    let carsHtml = '';
-    if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
-    if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
-    if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
-
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
-
-    const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
-    const pct = (currentStep / 5) * 100;
-
-    document.getElementById('progresso-pct').innerText = pct + '%';
-    document.getElementById('progresso-bar').style.width = pct + '%';
-
-    for (let i = 1; i <= 5; i++) {
-      const el = document.getElementById('step-' + i);
-      if(el) {
-        el.classList.remove('completed', 'active');
-        if (i < currentStep) el.classList.add('completed');
-        else if (i === currentStep) el.classList.add('active');
+  function parseCSV(text) {
+    let lines = text.split('\n');
+    let result = [];
+    for(let i = 0; i < lines.length; i++) {
+      let row = lines[i].split(',');
+      for(let j = 0; j < row.length; j++) {
+        row[j] = row[j].replace(/^"|"$/g, '').trim();
       }
+      result.push(row);
+    }
+    return result;
+  }
+
+  async function carregarDadosCSV() {
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=0&single=true&output=csv&t=" + new Date().getTime();
+
+    try {
+      const response = await fetch(csvUrl);
+      const text = await response.text();
+      const rows = parseCSV(text);
+
+      const cliente = rows[2] ? rows[2][1] : "-";
+      const orcamento = rows[3] ? rows[3][1] : "-";
+      const criterios = rows[4] ? rows[4][1] : "-";
+      const etapa = rows[5] ? rows[5][1] : "1";
+      const vistoria = rows[6] ? rows[6][1] : "-";
+
+      const c1Name = rows[2] ? rows[2][4] : "", c1Status = rows[2] ? rows[2][5] : "";
+      const c2Name = rows[3] ? rows[3][4] : "", c2Status = rows[3] ? rows[3][5] : "";
+      const c3Name = rows[4] ? rows[4][4] : "", c3Status = rows[4] ? rows[4][5] : "";
+
+      const obs = rows[18] ? rows[18][0] : "-";
+
+      document.getElementById('cliente-nome').innerText = cliente || "-";
+      document.getElementById('orcamento-val').innerText = orcamento || "-";
+      document.getElementById('criterios-val').innerText = criterios || "-";
+      document.getElementById('vistoria-status').innerText = vistoria || "-";
+      document.getElementById('obs-text').innerText = obs || "Sem observações no momento.";
+
+      let carsHtml = '';
+      if(c1Name) carsHtml += `<div class="car-item"><span class="car-name">${c1Name} ${c1Status ? "(" + c1Status + ")" : ""}</span></div>`;
+      if(c2Name) carsHtml += `<div class="car-item"><span class="car-name">${c2Name} ${c2Status ? "(" + c2Status + ")" : ""}</span></div>`;
+      if(c3Name) carsHtml += `<div class="car-item"><span class="car-name">${c3Name} ${c3Status ? "(" + c3Status + ")" : ""}</span></div>`;
+
+      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+
+      const currentStep = parseInt(String(etapa).charAt(0)) || 1;
+      const pct = (currentStep / 5) * 100;
+
+      document.getElementById('progresso-pct').innerText = pct + '%';
+      document.getElementById('progresso-bar').style.width = pct + '%';
+
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById('step-' + i);
+        if(el) {
+          el.classList.remove('completed', 'active');
+          if (i < currentStep) el.classList.add('completed');
+          else if (i === currentStep) el.classList.add('active');
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao carregar dados:", err);
+      document.getElementById('cliente-nome').innerText = "Erro ao carregar";
     }
   }
 
-  // URL direta do Apps Script que já está configurado na sua planilha
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec?callback=renderData&t=" + new Date().getTime();
-
-  const script = document.createElement('script');
-  script.src = scriptUrl;
-  document.body.appendChild(script);
+  carregarDadosCSV();
 </script>
 
 </body>
