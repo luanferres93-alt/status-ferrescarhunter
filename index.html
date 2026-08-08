@@ -208,19 +208,19 @@
 
   <div class="info-card">
     <div class="info-row">
-      <span class="info-label">Cliente</span>
+      <span class="info-label" id="lbl-cliente">CLIENTE</span>
       <span class="info-value" id="cliente-nome">Carregando...</span>
     </div>
     <div class="info-row">
-      <span class="info-label">Orçamento Teto</span>
+      <span class="info-label" id="lbl-orcamento">ORÇAMENTO</span>
       <span class="info-value" id="orcamento-val">Carregando...</span>
     </div>
     <div class="info-row">
-      <span class="info-label">Critérios do Perfil</span>
+      <span class="info-label" id="lbl-criterios">CRITÉRIOS DO PERFIL</span>
       <span class="info-value" id="criterios-val" style="font-size: 11px; color: #94a3b8;">Carregando...</span>
     </div>
     <div class="info-row" style="margin-top: 10px;">
-      <span class="info-label">Resultado Vistoria</span>
+      <span class="info-label" id="lbl-vistoria">RESULTADO VISTORIA</span>
       <span class="status-badge" id="vistoria-status">Carregando...</span>
     </div>
   </div>
@@ -284,14 +284,17 @@
 </div>
 
 <script>
-  let carregado = false;
-
   function renderData(data) {
-    carregado = true;
-    document.getElementById('cliente-nome').innerText = data.cliente || "-";
-    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
-    document.getElementById('criterios-val').innerText = data.criterios || "-";
-    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
+    // Atualiza Rótulos e Valores dinamicamente da planilha
+    if(data.lblCliente) document.getElementById('lbl-cliente').innerText = data.lblCliente;
+    if(data.lblOrcamento) document.getElementById('lbl-orcamento').innerText = data.lblOrcamento;
+    if(data.lblCriterios) document.getElementById('lbl-criterios').innerText = data.lblCriterios;
+    if(data.lblVistoria) document.getElementById('lbl-vistoria').innerText = data.lblVistoria;
+
+    document.getElementById('cliente-nome').innerText = data.valCliente || "-";
+    document.getElementById('orcamento-val').innerText = data.valOrcamento || "-";
+    document.getElementById('criterios-val').innerText = data.valCriterios || "-";
+    document.getElementById('vistoria-status').innerText = data.valVistoria || "-";
     document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
 
     let carsHtml = '';
@@ -321,17 +324,7 @@
 
   const script = document.createElement('script');
   script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
-  script.onerror = function() {
-    document.getElementById('cliente-nome').innerText = "Erro ao conectar";
-  };
   document.body.appendChild(script);
-
-  // Proteção: Se em 5 segundos não responder, avisa o usuário
-  setTimeout(() => {
-    if(!carregado) {
-      document.getElementById('cliente-nome').innerText = "Atualizando planilha...";
-    }
-  }, 5000);
 </script>
 
 </body>
