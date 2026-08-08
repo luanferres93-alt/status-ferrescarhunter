@@ -40,7 +40,6 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
 
-    /* Cabeçalho */
     .brand-header {
       text-align: center;
       padding-bottom: 16px;
@@ -63,7 +62,6 @@
       margin-top: 2px;
     }
 
-    /* Cards de Informações */
     .info-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -95,7 +93,6 @@
       text-align: right;
     }
 
-    /* Tags e Badges */
     .status-badge {
       display: inline-block;
       padding: 4px 10px;
@@ -116,7 +113,6 @@
       margin-bottom: 10px;
     }
 
-    /* Lista de Carros */
     .car-item {
       display: flex;
       justify-content: space-between;
@@ -130,7 +126,6 @@
     .car-item:last-child { margin-bottom: 0; }
     .car-name { font-size: 12px; font-weight: 700; color: #ffffff; }
 
-    /* Progresso */
     .progress-track {
       width: 100%;
       height: 10px;
@@ -148,7 +143,6 @@
       transition: width 0.6s ease;
     }
 
-    /* Linha do Tempo */
     .timeline {
       position: relative;
       padding-left: 20px;
@@ -186,7 +180,6 @@
     .step-desc { font-size: 10px; color: #475569; margin-top: 2px; line-height: 1.3; }
     .step.active .step-desc { color: #94a3b8; }
 
-    /* Observação Tática */
     .obs-box {
       background: rgba(245, 158, 11, 0.08);
       border-left: 3px solid var(--gold-light);
@@ -291,7 +284,6 @@
 </div>
 
 <script>
-  // Função Callback chamada pelo script JSONP
   function renderData(data) {
     document.getElementById('cliente-nome').innerText = data.cliente || "-";
     document.getElementById('orcamento-val').innerText = data.orcamento || "-";
@@ -322,9 +314,14 @@
     }
   }
 
-  // Requisição JSONP bypassando restrições de CORS
+  // URL atualizada da nova implantação
+  const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
+
   const script = document.createElement('script');
-  script.src = "https://script.google.com/macros/s/AKfycbxcJ_IgP9noQ8obQhz-dBf66abPqjmB6IEyQz0ymowiKUstMXAalC8D8i1uWZjx_V5jPQ/exec?callback=renderData&t=" + new Date().getTime();
+  script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
+  script.onerror = function() {
+    document.getElementById('cliente-nome').innerText = "Erro ao conectar API";
+  };
   document.body.appendChild(script);
 </script>
 
