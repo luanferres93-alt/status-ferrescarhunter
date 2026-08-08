@@ -267,35 +267,36 @@
 </div>
 
 <script>
-  const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnC6RAj6mg_EjOAe8pO6VJ_ACOi2VSErhWOL8yxV3d7XH8p_WucYPMOHjMifwk1XwOdqWmTdTneB6l/pub?output=csv";
+  // Acessa os dados via chamada direta do Google Sheets (sem cache)
+  const gvizUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnC6RAj6mg_EjOAe8pO6VJ_ACOi2VSErhWOL8yxV3d7XH8p_WucYPMOHjMifwk1XwOdqWmTdTneB6l/gviz/tq?tqx=out:json";
 
-  fetch(sheetUrl)
-    .then(response => response.text())
-    .then(csvText => {
-      // Converte as linhas do CSV de forma limpa
-      const lines = csvText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-      
-      // Procura a linha válida onde estão os dados reais do cliente
-      let validRow = null;
-      for (let line of lines) {
-        const cols = line.split(',').map(c => c.replace(/"/g, '').trim());
-        // Filtra ignorando os títulos do topo da planilha
-        if (cols.length >= 2 && cols[0] !== "" && !cols[0].includes("FERRES CAR HUNTER") && !cols[0].toLowerCase().includes("cliente")) {
-          validRow = cols;
-          break;
+  fetch(gvizUrl)
+    .then(res => res.text())
+    .then(data => {
+      const json = JSON.parse(data.substring(47, data.length - 2));
+      const rows = json.table.rows;
+
+      // Percorre todas as linhas até encontrar a linha do cliente
+      let clientRow = null;
+      for (let r of rows) {
+        if (r.c && r.c[0] && r.c[0].v) {
+          const val = String(r.c[0].v);
+          if (!val.includes("FERRES") && !val.toLowerCase().includes("cliente")) {
+            clientRow = r.c;
+            break;
+          }
         }
       }
 
-      // Se encontrou dados válidos, insere na tela
-      if (validRow) {
-        document.getElementById('cliente-nome').innerText = validRow[0] || "Tamiris";
-        document.getElementById('carro-alvo').innerText = validRow[1] || "-";
+      if (clientRow) {
+        document.getElementById('cliente-nome').innerText = clientRow[0] ? clientRow[0].v : "Tamiris";
+        document.getElementById('carro-alvo').innerText = clientRow[1] ? clientRow[1].v : "-";
         
-        const etapaText = validRow[2] || "1";
+        const etapaText = clientRow[2] ? String(clientRow[2].v) : "1";
         const currentStep = parseInt(etapaText.charAt(0)) || 1;
         
-        document.getElementById('vistoria-status').innerText = validRow[3] || "Aguardando";
-        document.getElementById('obs-text').innerText = validRow[4] || "Sem observações no momento.";
+        document.getElementById('vistoria-status').innerText = clientRow[3] ? clientRow[3].v : "Aguardando";
+        document.getElementById('obs-text').innerText = clientRow[4] ? clientRow[4].v : "Sem observações no momento.";
 
         const pct = (currentStep / 5) * 100;
         document.getElementById('progresso-pct').innerText = pct + '%';
@@ -309,7 +310,7 @@
         }
       }
     })
-    .catch(err => console.error("Erro ao carregar a planilha:", err));
+    .catch(err => console.error("Erro ao carregar dados:", err));
 </script>
 </body>
 </html>
