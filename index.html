@@ -284,7 +284,10 @@
 </div>
 
 <script>
+  let carregado = false;
+
   function renderData(data) {
+    carregado = true;
     document.getElementById('cliente-nome').innerText = data.cliente || "-";
     document.getElementById('orcamento-val').innerText = data.orcamento || "-";
     document.getElementById('criterios-val').innerText = data.criterios || "-";
@@ -314,12 +317,21 @@
     }
   }
 
-  // Chamada direta via Apps Script em tempo real
   const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
 
   const script = document.createElement('script');
   script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
+  script.onerror = function() {
+    document.getElementById('cliente-nome').innerText = "Erro ao conectar";
+  };
   document.body.appendChild(script);
+
+  // Proteção: Se em 5 segundos não responder, avisa o usuário
+  setTimeout(() => {
+    if(!carregado) {
+      document.getElementById('cliente-nome').innerText = "Atualizando planilha...";
+    }
+  }, 5000);
 </script>
 
 </body>
