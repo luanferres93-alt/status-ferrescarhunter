@@ -296,17 +296,20 @@
 </div>
 
 <script>
-  // Link da sua nova API do Google Apps Script
-  const apiUrl = "https://script.google.com/macros/s/AKfycbxcJ_IgP9noQ8obQhz-dBf66abPqjmB6IEyQz0ymowiKUstMXAalC8D8i1uWZjx_V5jPQ/exec";
+  // Link oficial da sua API do Apps Script
+  const baseUrl = "https://script.google.com/macros/s/AKfycbxcJ_IgP9noQ8obQhz-dBf66abPqjmB6IEyQz0ymowiKUstMXAalC8D8i1uWZjx_V5jPQ/exec";
+  
+  // Adiciona parâmetro de timestamp para forçar atualização e evitar cache antigo
+  const apiUrl = baseUrl + "?t=" + new Date().getTime();
 
   fetch(apiUrl)
     .then(res => res.json())
     .then(data => {
-      document.getElementById('cliente-nome').innerText = data.cliente;
-      document.getElementById('orcamento-val').innerText = data.orcamento;
-      document.getElementById('criterios-val').innerText = data.criterios;
-      document.getElementById('vistoria-status').innerText = data.vistoria;
-      document.getElementById('obs-text').innerText = data.obs;
+      document.getElementById('cliente-nome').innerText = data.cliente || "-";
+      document.getElementById('orcamento-val').innerText = data.orcamento || "-";
+      document.getElementById('criterios-val').innerText = data.criterios || "-";
+      document.getElementById('vistoria-status').innerText = data.vistoria || "-";
+      document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
 
       // Monta a lista de carros dinamicamente
       let carsHtml = '';
@@ -314,10 +317,10 @@
       if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
       if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
       
-      document.getElementById('cars-list').innerHTML = carsHtml;
+      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo em radar</span></div>';
 
       // Progresso e Timeline
-      const currentStep = parseInt(data.etapa.charAt(0)) || 1;
+      const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
       const pct = (currentStep / 5) * 100;
 
       document.getElementById('progresso-pct').innerText = pct + '%';
@@ -325,12 +328,17 @@
 
       for (let i = 1; i <= 5; i++) {
         const el = document.getElementById('step-' + i);
-        el.classList.remove('completed', 'active');
-        if (i < currentStep) el.classList.add('completed');
-        else if (i === currentStep) el.classList.add('active');
+        if(el) {
+          el.classList.remove('completed', 'active');
+          if (i < currentStep) el.classList.add('completed');
+          else if (i === currentStep) el.classList.add('active');
+        }
       }
     })
-    .catch(err => console.error("Erro ao carregar dados:", err));
+    .catch(err => {
+      console.error("Erro ao carregar dados:", err);
+      document.getElementById('cliente-nome').innerText = "Erro ao carregar";
+    });
 </script>
 
 </body>
