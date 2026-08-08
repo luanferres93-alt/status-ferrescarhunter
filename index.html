@@ -1,41 +1,324 @@
-function doGet(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  
-  function getVal(range) {
-    try {
-      var val = sheet.getRange(range).getValue();
-      return (val !== null && val !== undefined && String(val).trim() !== "") ? String(val) : "-";
-    } catch(err) {
-      return "-";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ferres Car Hunter — Portal do Cliente</title>
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #161e2e;
+      --card-border: #232d3f;
+      --gold: #d97706;
+      --gold-light: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 16px 12px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 460px;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .brand-header {
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 16px;
+    }
+    .brand-logo {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .brand-logo span { color: var(--gold-light); }
+    .brand-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .info-row:last-child { margin-bottom: 0; }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: right;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .car-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0b0f17;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .car-item:last-child { margin-bottom: 0; }
+    .car-name { font-size: 12px; font-weight: 700; color: #ffffff; }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #0b0f17;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      margin-top: 6px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      width: 0%;
+      border-radius: 20px;
+      transition: width 0.6s ease;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      margin-top: 12px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: #1e293b;
+    }
+    .step { position: relative; margin-bottom: 16px; }
+    .step:last-child { margin-bottom: 0; }
+    
+    .step-dot {
+      position: absolute;
+      left: -20px;
+      top: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #0f172a;
+      border: 2px solid #334155;
+    }
+    .step.completed .step-dot { background: var(--green); border-color: var(--green); }
+    .step.active .step-dot { background: var(--gold-light); border-color: var(--gold-light); }
+
+    .step-name { font-size: 12px; font-weight: 700; color: #64748b; }
+    .step.completed .step-name { color: #ffffff; }
+    .step.active .step-name { color: var(--gold-light); }
+
+    .step-desc { font-size: 10px; color: #475569; margin-top: 2px; line-height: 1.3; }
+    .step.active .step-desc { color: #94a3b8; }
+
+    .obs-box {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid var(--gold-light);
+      border-radius: 0 10px 10px 0;
+      padding: 12px;
+    }
+    .obs-text { font-size: 12px; color: #e2e8f0; line-height: 1.4; }
+
+    .app-footer {
+      text-align: center;
+      font-size: 9px;
+      color: #475569;
+      margin-top: 16px;
+      padding-top: 10px;
+      border-top: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="brand-header">
+    <div class="brand-logo">FERRES <span>CAR HUNTER</span></div>
+    <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-row">
+      <span class="info-label">CLIENTE</span>
+      <span class="info-value" id="cliente-nome">Carregando...</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">ORÇAMENTO TETO</span>
+      <span class="info-value" id="orcamento-val">Carregando...</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">CRITÉRIOS DO PERFIL</span>
+      <span class="info-value" id="criterios-val" style="font-size: 11px; color: #94a3b8;">Carregando...</span>
+    </div>
+    <div class="info-row" style="margin-top: 10px;">
+      <span class="info-label">RESULTADO VISTORIA</span>
+      <span class="status-badge" id="vistoria-status">Carregando...</span>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="section-title">🚘 Modelos em Radar & Foco</div>
+    <div id="cars-list">
+      <div class="car-item"><span class="car-name">Carregando modelos...</span></div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-row">
+      <span class="info-label">Progresso Geral</span>
+      <span class="info-value" id="progresso-pct" style="color: var(--gold-light);">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progresso-bar"></div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="section-title">📌 Linha do Tempo do Processo</div>
+    <div class="timeline">
+      <div class="step" id="step-1">
+        <div class="step-dot"></div>
+        <div class="step-name">1 - Pesquisando</div>
+        <div class="step-desc">Buscando opções no mercado conforme perfil</div>
+      </div>
+      <div class="step" id="step-2">
+        <div class="step-dot"></div>
+        <div class="step-name">2 - Carro-alvo detectado</div>
+        <div class="step-desc">Seleção de veículo de alto potencial</div>
+      </div>
+      <div class="step" id="step-3">
+        <div class="step-dot"></div>
+        <div class="step-name">3 - Vistoria agendada</div>
+        <div class="step-desc">Inspeção presencial agendada</div>
+      </div>
+      <div class="step" id="step-4">
+        <div class="step-dot"></div>
+        <div class="step-name">4 - Resultado da vistoria</div>
+        <div class="step-desc">Emissão e validação do laudo técnico</div>
+      </div>
+      <div class="step" id="step-5">
+        <div class="step-dot"></div>
+        <div class="step-name">5 - Negócio fechado</div>
+        <div class="step-desc">Negociação final e entrega do carro</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs-box">
+    <div class="section-title" style="margin-bottom: 4px;">💬 Observação Tática / Próximo Passo</div>
+    <div class="obs-text" id="obs-text">Carregando dados...</div>
+  </div>
+
+  <div class="app-footer">
+    Ferres Car Hunter • Atualizado em tempo real via Google Sheets
+  </div>
+</div>
+
+<script>
+  function renderData(data) {
+    document.getElementById('cliente-nome').innerText = data.cliente || "-";
+    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
+    document.getElementById('criterios-val').innerText = data.criterios || "-";
+    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
+    document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
+
+    let carsHtml = '';
+    if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
+    if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
+    if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
+    
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+
+    const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
+    const pct = (currentStep / 5) * 100;
+
+    document.getElementById('progresso-pct').innerText = pct + '%';
+    document.getElementById('progresso-bar').style.width = pct + '%';
+
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('step-' + i);
+      if(el) {
+        el.classList.remove('completed', 'active');
+        if (i < currentStep) el.classList.add('completed');
+        else if (i === currentStep) el.classList.add('active');
+      }
     }
   }
-  
-  var c1Name = getVal("E3"), c1Status = getVal("F3");
-  var c2Name = getVal("E4"), c2Status = getVal("F4");
-  var c3Name = getVal("E5"), c3Status = getVal("F5");
 
-  var resultado = {
-    cliente: getVal("B3"),
-    orcamento: getVal("B4"),
-    criterios: getVal("B5"),
-    etapa: getVal("B6"),
-    vistoria: getVal("B7"),
-    
-    carro1: c1Name !== "-" ? c1Name + (c1Status !== "-" ? " (" + c1Status + ")" : "") : "",
-    carro2: c2Name !== "-" ? c2Name + (c2Status !== "-" ? " (" + c2Status + ")" : "") : "",
-    carro3: c3Name !== "-" ? c3Name + (c3Status !== "-" ? " (" + c3Status + ")" : "") : "",
-    
-    obs: getVal("A19")
-  };
-  
-  var callback = e ? e.parameter.callback : null;
-  if (callback) {
-    return ContentService
-      .createTextOutput(callback + "(" + JSON.stringify(resultado) + ")")
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  } else {
-    return ContentService
-      .createTextOutput(JSON.stringify(resultado))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+  const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
+  const script = document.createElement('script');
+  script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
+  document.body.appendChild(script);
+</script>
+
+</body>
+</html>
