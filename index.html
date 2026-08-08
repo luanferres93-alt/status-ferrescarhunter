@@ -284,21 +284,43 @@
 </div>
 
 <script>
-  function renderData(data) {
-    document.getElementById('cliente-nome').innerText = data.cliente || "-";
-    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
-    document.getElementById('criterios-val').innerText = data.criterios || "-";
-    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
-    document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
+  function renderGVizData(response) {
+    if(!response || !response.table) return;
+    const rows = response.table.rows;
+
+    function getVal(r, c) {
+      if (rows[r] && rows[r].c && rows[r].c[c]) {
+        return rows[r].c[c].v || rows[r].c[c].f || "-";
+      }
+      return "-";
+    }
+
+    const cliente = getVal(2, 1);   // B3
+    const orcamento = getVal(3, 1); // B4
+    const criterios = getVal(4, 1); // B5
+    const etapa = getVal(5, 1);     // B6
+    const vistoria = getVal(6, 1);  // B7
+
+    const c1Name = getVal(2, 4), c1Status = getVal(2, 5); // E3, F3
+    const c2Name = getVal(3, 4), c2Status = getVal(3, 5); // E4, F4
+    const c3Name = getVal(4, 4), c3Status = getVal(4, 5); // E5, F5
+
+    const obs = getVal(18, 0); // A19
+
+    document.getElementById('cliente-nome').innerText = cliente;
+    document.getElementById('orcamento-val').innerText = orcamento;
+    document.getElementById('criterios-val').innerText = criterios;
+    document.getElementById('vistoria-status').innerText = vistoria;
+    document.getElementById('obs-text').innerText = obs;
 
     let carsHtml = '';
-    if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
-    if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
-    if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
-    
+    if(c1Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c1Name} (${c1Status})</span></div>`;
+    if(c2Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c2Name} (${c2Status})</span></div>`;
+    if(c3Name !== "-") carsHtml += `<div class="car-item"><span class="car-name">${c3Name} (${c3Status})</span></div>`;
+
     document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
 
-    const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
+    const currentStep = parseInt(String(etapa).charAt(0)) || 1;
     const pct = (currentStep / 5) * 100;
 
     document.getElementById('progresso-pct').innerText = pct + '%';
@@ -314,9 +336,11 @@
     }
   }
 
-  const baseUrl = "https://script.google.com/macros/s/AKfycbwvMHEiqtRScXF318j5ZA8Wyt1mG-o6wigZbGtCkHlux9sePzECraHRfZ4wGODXfY62/exec";
+  // Google Visualization API (Compatível com Safari/iOS sem bloqueios de privacidade)
+  const gvizUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/gviz/tq?tqx=responseHandler:renderGVizData&t=" + new Date().getTime();
+
   const script = document.createElement('script');
-  script.src = baseUrl + "?callback=renderData&t=" + new Date().getTime();
+  script.src = gvizUrl;
   document.body.appendChild(script);
 </script>
 
