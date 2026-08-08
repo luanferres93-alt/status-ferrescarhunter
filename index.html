@@ -259,65 +259,27 @@
   </div>
   <div class="obs-box">
     <div class="obs-header">💬 Observação Tática / Próximo Passo</div>
-    <div class="obs-text" id="obs-text">Carregando dados da planilha...</div>
+    <div class="obs-text" id="obs-text">Carregando dados...</div>
   </div>
   <div class="app-footer">
-    Ferres Car Hunter • Atualizado em tempo real via Google Sheets
+    Ferres Car Hunter • Atualizado em tempo real via Google Sheets API
   </div>
 </div>
 
 <script>
-  const gvizUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnC6RAj6mg_EjOAe8pO6VJ_ACOi2VSErhWOL8yxV3d7XH8p_WucYPMOHjMifwk1XwOdqWmTdTneB6l/gviz/tq?tqx=out:json";
+  const apiUrl = "https://script.google.com/macros/s/AKfycbytCAMyzMG-aKb6C1Jkw9ZDvtsHnkEXLdbRIehnB-CRamLsBQCT2dcJlrOfXly_ADnF/exec";
 
-  fetch(gvizUrl)
-    .then(res => res.text())
+  fetch(apiUrl)
+    .then(res => res.json())
     .then(data => {
-      const json = JSON.parse(data.substring(47, data.length - 2));
-      const rows = json.table.rows;
+      document.getElementById('cliente-nome').innerText = data.cliente;
+      document.getElementById('carro-alvo').innerText = data.carro;
+      document.getElementById('vistoria-status').innerText = data.vistoria;
+      document.getElementById('obs-text').innerText = data.obs;
 
-      let cliente = "Tamiris";
-      let carro = "-";
-      let etapa = "1";
-      let vistoria = "Aguardando";
-      let obs = "";
-
-      // Varre toda a tabela e busca os rótulos dinamicamente
-      rows.forEach((r, rIdx) => {
-        if (!r.c) return;
-        r.c.forEach((c, cIdx) => {
-          if (!c || !c.v) return;
-          const txt = String(c.v).toUpperCase().trim();
-
-          if (txt.includes("CLIENTE:")) {
-            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) cliente = r.c[cIdx + 1].v;
-          }
-          if (txt.includes("CARRO-ALVO:")) {
-            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) carro = r.c[cIdx + 1].v;
-          }
-          if (txt.includes("ETAPA ATUAL:")) {
-            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) etapa = String(r.c[cIdx + 1].v);
-          }
-          if (txt.includes("RESULTADO VISTORIA:")) {
-            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) vistoria = r.c[cIdx + 1].v;
-          }
-          if (txt.includes("OBSERVAÇÃO TÁTICA") || txt.includes("PRÓXIMO PASSO")) {
-            // Pega a linha seguinte à do título da observação
-            if (rows[rIdx + 1] && rows[rIdx + 1].c) {
-              const nextRowCell = rows[rIdx + 1].c.find(cell => cell && cell.v);
-              if (nextRowCell) obs = nextRowCell.v;
-            }
-          }
-        });
-      });
-
-      document.getElementById('cliente-nome').innerText = cliente;
-      document.getElementById('carro-alvo').innerText = carro;
-      document.getElementById('vistoria-status').innerText = vistoria;
-      document.getElementById('obs-text').innerText = obs || "Sem observações no momento.";
-
-      const currentStep = parseInt(etapa.charAt(0)) || 1;
+      const currentStep = parseInt(data.etapa.charAt(0)) || 1;
       const pct = (currentStep / 5) * 100;
-      
+
       document.getElementById('progresso-pct').innerText = pct + '%';
       document.getElementById('progresso-bar').style.width = pct + '%';
 
@@ -328,7 +290,7 @@
         else if (i === currentStep) el.classList.add('active');
       }
     })
-    .catch(err => console.error("Erro ao carregar:", err));
+    .catch(err => console.error("Erro ao carregar os dados:", err));
 </script>
 </body>
 </html>
