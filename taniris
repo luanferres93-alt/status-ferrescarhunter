@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ferres Car Hunter — Portal do Cliente</title>
+  <style>
+    :root {
+      --bg: #0e0e0d;
+      --card: #161513;
+      --border: #2a2924;
+      --gold: #c9a227;
+      --gold-glow: rgba(201, 162, 39, 0.2);
+      --text: #f0f0f0;
+      --muted: #888888;
+      --green: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 12px;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+    }
+    .brand-header {
+      text-align: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .brand-logo {
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .brand-logo span { color: var(--gold); }
+    .brand-sub {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 3px;
+    }
+    .client-card {
+      background: #100f0e;
+      border: 1px solid #22211d;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .info-value { font-size: 14px; font-weight: 700; color: #ffffff; }
+    .car-tag { color: var(--gold); font-size: 13px; }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(201, 162, 39, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+    }
+    .progress-section {
+      background: #100f0e;
+      border: 1px solid #22211d;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .progress-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .progress-pct { font-size: 14px; font-weight: 800; color: var(--gold); }
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #1e1d1a;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid #2a2924;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #967718, #c9a227);
+      width: 60%;
+      border-radius: 20px;
+      box-shadow: 0 0 12px var(--gold-glow);
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 24px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: #262521;
+    }
+    .step { position: relative; margin-bottom: 20px; }
+    .step:last-child { margin-bottom: 0; }
+    .step-dot {
+      position: absolute;
+      left: -24px;
+      top: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #161513;
+      border: 2px solid #44433d;
+    }
+    .step.completed .step-dot {
+      background: var(--green);
+      border-color: var(--green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+    .step.active .step-dot {
+      background: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+    .step-name { font-size: 13px; font-weight: 700; color: #888888; }
+    .step.completed .step-name { color: #ffffff; }
+    .step.active .step-name { color: var(--gold); }
+    .step-desc { font-size: 11px; color: #666666; margin-top: 2px; line-height: 1.3; }
+    .step.active .step-desc { color: #aaaaaa; }
+    .obs-box {
+      background: rgba(201, 162, 39, 0.05);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      padding: 14px;
+    }
+    .obs-header {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .obs-text { font-size: 12px; color: #dddddd; line-height: 1.4; }
+    .app-footer {
+      text-align: center;
+      font-size: 9px;
+      color: #555555;
+      margin-top: 20px;
+      padding-top: 12px;
+      border-top: 1px solid #22211d;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="brand-header">
+    <div class="brand-logo">FERRES <span>CAR HUNTER</span></div>
+    <div class="brand-sub">Portal do Cliente • Busca em Tempo Real</div>
+  </div>
+  <div class="client-card">
+    <div class="info-row">
+      <span class="info-label">Cliente</span>
+      <span class="info-value">Tamiris</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Carro-Alvo</span>
+      <span class="info-value car-tag">Hyundai Creta Pulse 1.6 2018</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Vistoria</span>
+      <span class="status-badge">Aguardando Vistoria</span>
+    </div>
+  </div>
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-title">Progresso da Busca</span>
+      <span class="progress-pct">60%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+  <div class="section-title">📌 Linha do Tempo do Processo</div>
+  <div class="timeline">
+    <div class="step completed">
+      <div class="step-dot"></div>
+      <div class="step-name">1 - Pesquisando</div>
+      <div class="step-desc">Buscando opções no mercado conforme seu perfil e orçamento</div>
+    </div>
+    <div class="step completed">
+      <div class="step-dot"></div>
+      <div class="step-name">2 - Carro-alvo detectado</div>
+      <div class="step-desc">Seleção de um veículo de alto potencial para análise técnica</div>
+    </div>
+    <div class="step active">
+      <div class="step-dot"></div>
+      <div class="step-name">3 - Vistoria agendada</div>
+      <div class="step-desc">Inspeção presencial e laudo cautelar agendados</div>
+    </div>
+    <div class="step">
+      <div class="step-dot"></div>
+      <div class="step-name">4 - Resultado da vistoria</div>
+      <div class="step-desc">Aprovação técnica completa ou retomada da busca</div>
+    </div>
+    <div class="step">
+      <div class="step-dot"></div>
+      <div class="step-name">5 - Negócio fechado</div>
+      <div class="step-desc">Negociação final, pagamento e entrega do veículo</div>
+    </div>
+  </div>
+  <div class="obs-box">
+    <div class="obs-header">💬 Observação Tática / Próximo Passo</div>
+    <div class="obs-text">
+      Vistoria agendada para 10/08 às 14:00 em Santana. Vendedor confirmou presença no local.
+    </div>
+  </div>
+  <div class="app-footer">
+    Ferres Car Hunter • Atualizado em tempo real
+  </div>
+</div>
+</body>
+</html>
