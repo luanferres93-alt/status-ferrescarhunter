@@ -275,20 +275,45 @@
       const json = JSON.parse(data.substring(47, data.length - 2));
       const rows = json.table.rows;
 
-      // Função auxiliar para pegar valor com segurança
-      const getVal = (r, c) => (rows[r] && rows[r].c && rows[r].c[c] && rows[r].c[c].v) ? String(rows[r].c[c].v) : "";
+      let cliente = "Tamiris";
+      let carro = "-";
+      let etapa = "1";
+      let vistoria = "Aguardando";
+      let obs = "";
 
-      // Pega exatamente as posições da sua planilha
-      const cliente = getVal(3, 1) || "Tamiris";       // Célula B4
-      const etapa = getVal(4, 1) || "1";               // Célula B5
-      const carro = getVal(3, 5) || "-";               // Célula F4
-      const vistoria = getVal(4, 5) || "Aguardando";   // Célula F5
-      const obs = getVal(16, 1) || "Sem observações.";  // Célula B17
+      // Varre toda a tabela e busca os rótulos dinamicamente
+      rows.forEach((r, rIdx) => {
+        if (!r.c) return;
+        r.c.forEach((c, cIdx) => {
+          if (!c || !c.v) return;
+          const txt = String(c.v).toUpperCase().trim();
+
+          if (txt.includes("CLIENTE:")) {
+            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) cliente = r.c[cIdx + 1].v;
+          }
+          if (txt.includes("CARRO-ALVO:")) {
+            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) carro = r.c[cIdx + 1].v;
+          }
+          if (txt.includes("ETAPA ATUAL:")) {
+            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) etapa = String(r.c[cIdx + 1].v);
+          }
+          if (txt.includes("RESULTADO VISTORIA:")) {
+            if (r.c[cIdx + 1] && r.c[cIdx + 1].v) vistoria = r.c[cIdx + 1].v;
+          }
+          if (txt.includes("OBSERVAÇÃO TÁTICA") || txt.includes("PRÓXIMO PASSO")) {
+            // Pega a linha seguinte à do título da observação
+            if (rows[rIdx + 1] && rows[rIdx + 1].c) {
+              const nextRowCell = rows[rIdx + 1].c.find(cell => cell && cell.v);
+              if (nextRowCell) obs = nextRowCell.v;
+            }
+          }
+        });
+      });
 
       document.getElementById('cliente-nome').innerText = cliente;
       document.getElementById('carro-alvo').innerText = carro;
       document.getElementById('vistoria-status').innerText = vistoria;
-      document.getElementById('obs-text').innerText = obs;
+      document.getElementById('obs-text').innerText = obs || "Sem observações no momento.";
 
       const currentStep = parseInt(etapa.charAt(0)) || 1;
       const pct = (currentStep / 5) * 100;
