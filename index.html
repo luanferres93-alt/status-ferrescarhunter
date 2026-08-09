@@ -320,76 +320,88 @@
     const urlParams = new URLSearchParams(window.location.search);
     const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    // Slot 01 fixo para esta aba
-    const gid = '0';
-    const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${gid}&single=true&output=csv&t=${new Date().getTime()}`;
+    // Mapeamento das Abas (Slots) da Planilha
+    const slots = [
+      { id: "slot01", gid: "0" },
+      { id: "slot02", gid: "351050736" }
+    ];
 
-    try {
-      const response = await fetch(csvUrl);
-      const text = await response.text();
-      const rows = parseCSV(text);
+    let dadosEncontrados = null;
 
-      function getCellVal(r, c) {
-        return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
-      }
+    // Percorre as abas mapeadas para buscar a pessoa correspondente
+    for (const slot of slots) {
+      const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
-      const clientePlanilha = getCellVal(2, 1);
-      const clienteNormalizado = normalizarTexto(clientePlanilha);
+      try {
+        const response = await fetch(csvUrl);
+        const text = await response.text();
+        const rows = parseCSV(text);
 
-      // Valida se o parâmetro digitado bate com o nome na planilha
-      if (paramCliente !== "" && !clienteNormalizado.includes(paramCliente) && !paramCliente.includes(clienteNormalizado)) {
-        document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
-        document.getElementById('orcamento-val').innerText = "-";
-        document.getElementById('criterios-val').innerText = "-";
-        document.getElementById('vistoria-status').innerText = "-";
-        document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">Link desativado ou inválido</span></div>';
-        document.getElementById('obs-text').innerText = "Este portal de acompanhamento não está mais ativo para o link acessado.";
-        document.getElementById('progresso-pct').innerText = '0%';
-        document.getElementById('progresso-bar').style.width = '0%';
-        return;
-      }
-
-      const orcamento = getCellVal(3, 1);
-      const criterios = getCellVal(4, 1);
-      const etapa = getCellVal(5, 1);
-      const vistoria = getCellVal(6, 1);
-
-      const c1Name = getCellVal(2, 4), c1Status = getCellVal(2, 5);
-      const c2Name = getCellVal(3, 4), c2Status = getCellVal(3, 5);
-      const c3Name = getCellVal(4, 4), c3Status = getCellVal(4, 5);
-
-      const obs = getCellVal(18, 0);
-
-      document.getElementById('cliente-nome').innerText = clientePlanilha || "-";
-      document.getElementById('orcamento-val').innerText = orcamento || "-";
-      document.getElementById('criterios-val').innerText = criterios || "-";
-      document.getElementById('vistoria-status').innerText = vistoria || "-";
-      document.getElementById('obs-text').innerText = obs || "Sem observações no momento.";
-
-      let carsHtml = '';
-      if(c1Name) carsHtml += `<div class="car-item"><span class="car-name">${c1Name} ${c1Status ? "(" + c1Status + ")" : ""}</span></div>`;
-      if(c2Name) carsHtml += `<div class="car-item"><span class="car-name">${c2Name} ${c2Status ? "(" + c2Status + ")" : ""}</span></div>`;
-      if(c3Name) carsHtml += `<div class="car-item"><span class="car-name">${c3Name} ${c3Status ? "(" + c3Status + ")" : ""}</span></div>`;
-
-      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
-
-      const currentStep = parseInt(String(etapa).charAt(0)) || 1;
-      const pct = (currentStep / 5) * 100;
-
-      document.getElementById('progresso-pct').innerText = pct + '%';
-      document.getElementById('progresso-bar').style.width = pct + '%';
-
-      for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById('step-' + i);
-        if(el) {
-          el.classList.remove('completed', 'active');
-          if (i < currentStep) el.classList.add('completed');
-          else if (i === currentStep) el.classList.add('active');
+        function getCellVal(r, c) {
+          return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
         }
+
+        const clientePlanilha = getCellVal(2, 1);
+        const clienteNorm = normalizarTexto(clientePlanilha);
+
+        // Se o parâmetro for direto pelo nome do slot (ex: ?c=slot02) ou se contiver o nome do cliente
+        if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
+          dadosEncontrados = {
+            cliente: clientePlanilha,
+            orcamento: getCellVal(3, 1),
+            criterios: getCellVal(4, 1),
+            etapa: getCellVal(5, 1),
+            vistoria: getCellVal(6, 1),
+            c1Name: getCellVal(2, 4), c1Status: getCellVal(2, 5),
+            c2Name: getCellVal(3, 4), c2Status: getCellVal(3, 5),
+            c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
+            obs: getCellVal(18, 0)
+          };
+          break; // Achou o cliente, para a busca
+        }
+      } catch (err) {
+        console.error("Erro ao carregar slot:", slot.id, err);
       }
-    } catch (err) {
-      console.error("Erro ao carregar dados:", err);
-      document.getElementById('cliente-nome').innerText = "Erro ao carregar";
+    }
+
+    if (!dadosEncontrados) {
+      document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
+      document.getElementById('orcamento-val').innerText = "-";
+      document.getElementById('criterios-val').innerText = "-";
+      document.getElementById('vistoria-status').innerText = "-";
+      document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">Link desativado ou inválido</span></div>';
+      document.getElementById('obs-text').innerText = "Este portal de acompanhamento não está mais ativo para o link acessado.";
+      document.getElementById('progresso-pct').innerText = '0%';
+      document.getElementById('progresso-bar').style.width = '0%';
+      return;
+    }
+
+    document.getElementById('cliente-nome').innerText = dadosEncontrados.cliente || "-";
+    document.getElementById('orcamento-val').innerText = dadosEncontrados.orcamento || "-";
+    document.getElementById('criterios-val').innerText = dadosEncontrados.criterios || "-";
+    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "-";
+    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "Sem observações no momento.";
+
+    let carsHtml = '';
+    if(dadosEncontrados.c1Name) carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c1Name} ${dadosEncontrados.c1Status ? "(" + dadosEncontrados.c1Status + ")" : ""}</span></div>`;
+    if(dadosEncontrados.c2Name) carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c2Name} ${dadosEncontrados.c2Status ? "(" + dadosEncontrados.c2Status + ")" : ""}</span></div>`;
+    if(dadosEncontrados.c3Name) carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c3Name} ${dadosEncontrados.c3Status ? "(" + dadosEncontrados.c3Status + ")" : ""}</span></div>`;
+
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+
+    const currentStep = parseInt(String(dadosEncontrados.etapa).charAt(0)) || 1;
+    const pct = (currentStep / 5) * 100;
+
+    document.getElementById('progresso-pct').innerText = pct + '%';
+    document.getElementById('progresso-bar').style.width = pct + '%';
+
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('step-' + i);
+      if(el) {
+        el.classList.remove('completed', 'active');
+        if (i < currentStep) el.classList.add('completed');
+        else if (i === currentStep) el.classList.add('active');
+      }
     }
   }
 
