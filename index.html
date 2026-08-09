@@ -308,18 +308,20 @@
     return r;
   }
 
+  function normalizarTexto(txt) {
+    return String(txt || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+  }
+
   async function carregarDadosCSV() {
-    // Mapeamento futuro das abas da planilha (Slot -> GID)
-    const slots = {
-      'slot01': '0'
-    };
-
     const urlParams = new URLSearchParams(window.location.search);
-    const clienteParam = (urlParams.get('c') || '').toLowerCase().replace(/\s+/g, '');
+    const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    // Por padrão busca na Slot_01 (gid=0)
-    let gid = '0';
-
+    // Slot 01 fixo para esta aba
+    const gid = '0';
     const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
     try {
@@ -331,7 +333,22 @@
         return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
       }
 
-      const cliente = getCellVal(2, 1);
+      const clientePlanilha = getCellVal(2, 1);
+      const clienteNormalizado = normalizarTexto(clientePlanilha);
+
+      // Valida se o parâmetro digitado bate com o nome na planilha
+      if (paramCliente !== "" && !clienteNormalizado.includes(paramCliente) && !paramCliente.includes(clienteNormalizado)) {
+        document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
+        document.getElementById('orcamento-val').innerText = "-";
+        document.getElementById('criterios-val').innerText = "-";
+        document.getElementById('vistoria-status').innerText = "-";
+        document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">Link desativado ou inválido</span></div>';
+        document.getElementById('obs-text').innerText = "Este portal de acompanhamento não está mais ativo para o link acessado.";
+        document.getElementById('progresso-pct').innerText = '0%';
+        document.getElementById('progresso-bar').style.width = '0%';
+        return;
+      }
+
       const orcamento = getCellVal(3, 1);
       const criterios = getCellVal(4, 1);
       const etapa = getCellVal(5, 1);
@@ -343,7 +360,7 @@
 
       const obs = getCellVal(18, 0);
 
-      document.getElementById('cliente-nome').innerText = cliente || "-";
+      document.getElementById('cliente-nome').innerText = clientePlanilha || "-";
       document.getElementById('orcamento-val').innerText = orcamento || "-";
       document.getElementById('criterios-val').innerText = criterios || "-";
       document.getElementById('vistoria-status').innerText = vistoria || "-";
