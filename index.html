@@ -284,61 +284,56 @@
 </div>
 
 <script>
-  async function carregarDadosScript() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const clienteParam = urlParams.get('c') || '';
+  function callbackDados(data) {
+    if (data.erro) {
+      document.getElementById('cliente-nome').innerText = "Não encontrado";
+      document.getElementById('orcamento-val').innerText = "-";
+      document.getElementById('criterios-val').innerText = "-";
+      document.getElementById('vistoria-status').innerText = "-";
+      document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">-</span></div>';
+      document.getElementById('obs-text').innerText = data.erro;
+      return;
+    }
 
-    const baseUrl = "https://script.google.com/macros/s/AKfycbxcMT9Dv6OvzCaE6Z9NHRIYpliV1SvFNtd_osfowKStPCYFkJgn5Q8oP3tIYJKdBrUU0g/exec";
-    const scriptUrl = baseUrl + "?c=" + encodeURIComponent(clienteParam);
+    document.getElementById('cliente-nome').innerText = data.cliente || "-";
+    document.getElementById('orcamento-val').innerText = data.orcamento || "-";
+    document.getElementById('criterios-val').innerText = data.criterios || "-";
+    document.getElementById('vistoria-status').innerText = data.vistoria || "-";
+    document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
 
-    try {
-      const response = await fetch(scriptUrl);
-      const data = await response.json();
+    let carsHtml = '';
+    if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
+    if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
+    if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
 
-      if (data.erro) {
-        document.getElementById('cliente-nome').innerText = "Não encontrado";
-        document.getElementById('orcamento-val').innerText = "-";
-        document.getElementById('criterios-val').innerText = "-";
-        document.getElementById('vistoria-status').innerText = "-";
-        document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">-</span></div>';
-        document.getElementById('obs-text').innerText = data.erro;
-        return;
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+
+    const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
+    const pct = (currentStep / 5) * 100;
+
+    document.getElementById('progresso-pct').innerText = pct + '%';
+    document.getElementById('progresso-bar').style.width = pct + '%';
+
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('step-' + i);
+      if(el) {
+        el.classList.remove('completed', 'active');
+        if (i < currentStep) el.classList.add('completed');
+        else if (i === currentStep) el.classList.add('active');
       }
-
-      document.getElementById('cliente-nome').innerText = data.cliente || "-";
-      document.getElementById('orcamento-val').innerText = data.orcamento || "-";
-      document.getElementById('criterios-val').innerText = data.criterios || "-";
-      document.getElementById('vistoria-status').innerText = data.vistoria || "-";
-      document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
-
-      let carsHtml = '';
-      if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
-      if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
-      if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
-
-      document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
-
-      const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
-      const pct = (currentStep / 5) * 100;
-
-      document.getElementById('progresso-pct').innerText = pct + '%';
-      document.getElementById('progresso-bar').style.width = pct + '%';
-
-      for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById('step-' + i);
-        if(el) {
-          el.classList.remove('completed', 'active');
-          if (i < currentStep) el.classList.add('completed');
-          else if (i === currentStep) el.classList.add('active');
-        }
-      }
-    } catch (err) {
-      console.error("Erro ao carregar dados:", err);
-      document.getElementById('cliente-nome').innerText = "Erro ao carregar";
     }
   }
 
-  carregarDadosScript();
+  function carregar() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clienteParam = urlParams.get('c') || '';
+
+    const script = document.createElement('script');
+    script.src = "https://script.google.com/macros/s/AKfycbxcMT9Dv6OvzCaE6Z9NHRIYpliV1SvFNtd_osfowKStPCYFkJgn5Q8oP3tIYJKdBrUU0g/exec?c=" + encodeURIComponent(clienteParam) + "&callback=callbackDados";
+    document.body.appendChild(script);
+  }
+
+  carregar();
 </script>
 
 </body>
