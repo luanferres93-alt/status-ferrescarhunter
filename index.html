@@ -328,7 +328,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const clienteParam = urlParams.get('c') || '';
 
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwgdl1Hs_5ZPGSZxJhJfixQyVOmyKnp1RcGAcQBxjBZSfzVqhXCeLCsaE1EKSu_GckQdQ/exec?c=" + encodeURIComponent(clienteParam) + "&callback=callbackDados&t=" + new Date().getTime();
+    const scriptUrl = "https://script.google.com/macros/s/AKfycby0Vpn86tcBhK-kEf0uYzpee0kdE73PEPxwTMyBcnh_FtBKKcHsSM7Jwqw45tPNnfm--g/exec?c=" + encodeURIComponent(clienteParam) + "&callback=callbackDados&t=" + new Date().getTime();
 
     const script = document.createElement('script');
     script.src = scriptUrl;
