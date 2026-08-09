@@ -320,15 +320,23 @@
     const urlParams = new URLSearchParams(window.location.search);
     const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    // Mapeamento das Abas (Slots) da Planilha
+    // Mapeamento das 10 Abas (Slots) da Planilha
     const slots = [
       { id: "slot01", gid: "0" },
-      { id: "slot02", gid: "351050736" }
+      { id: "slot02", gid: "351050736" },
+      { id: "slot03", gid: "1472927648" },
+      { id: "slot04", gid: "592480650" },
+      { id: "slot05", gid: "898835735" },
+      { id: "slot06", gid: "1074355085" },
+      { id: "slot07", gid: "675909700" },
+      { id: "slot08", gid: "1270805133" },
+      { id: "slot09", gid: "1333926826" },
+      { id: "slot10", gid: "167400982" }
     ];
 
     let dadosEncontrados = null;
 
-    // Percorre as abas mapeadas para buscar a pessoa correspondente
+    // Percorre as abas mapeadas para buscar o cliente correspondente
     for (const slot of slots) {
       const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
@@ -344,7 +352,7 @@
         const clientePlanilha = getCellVal(2, 1);
         const clienteNorm = normalizarTexto(clientePlanilha);
 
-        // Se o parâmetro for direto pelo nome do slot (ex: ?c=slot02) ou se contiver o nome do cliente
+        // Se o parâmetro for direto pelo nome do slot (ex: ?c=slot03) ou se contiver o nome do cliente
         if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
           dadosEncontrados = {
             cliente: clientePlanilha,
@@ -357,7 +365,7 @@
             c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
             obs: getCellVal(18, 0)
           };
-          break; // Achou o cliente, para a busca
+          break; // Encontrou o cliente, encerra a busca
         }
       } catch (err) {
         console.error("Erro ao carregar slot:", slot.id, err);
