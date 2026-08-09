@@ -284,68 +284,41 @@
 </div>
 
 <script>
-  function parseCSV(text) {
-    let p = '', c = '', r = [];
-    let q = false;
-    let row = [''];
-    for (let i = 0; i < text.length; i++) {
-      c = text[i];
-      p = text[i-1];
-      if (c === '"') {
-        if (q && text[i+1] === '"') { row[row.length - 1] += '"'; i++; }
-        else { q = !q; }
-      } else if (c === ',' && !q) {
-        row.push('');
-      } else if ((c === '\r' || c === '\n') && !q) {
-        if (c === '\r' && text[i+1] === '\n') { i++; }
-        r.push(row);
-        row = [''];
-      } else {
-        row[row.length - 1] += c;
-      }
-    }
-    if (row.length > 1 || row[0] !== '') { r.push(row); }
-    return r;
-  }
+  async function carregarDadosScript() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clienteParam = urlParams.get('c') || '';
 
-  async function carregarDadosCSV() {
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=0&single=true&output=csv&t=" + new Date().getTime();
+    const baseUrl = "https://script.google.com/macros/s/AKfycbxcMT9Dv6OvzCaE6Z9NHRIYpliV1SvFNtd_osfowKStPCYFkJgn5Q8oP3tIYJKdBrUU0g/exec";
+    const scriptUrl = baseUrl + "?c=" + encodeURIComponent(clienteParam);
 
     try {
-      const response = await fetch(csvUrl);
-      const text = await response.text();
-      const rows = parseCSV(text);
+      const response = await fetch(scriptUrl);
+      const data = await response.json();
 
-      function getCellVal(r, c) {
-        return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
+      if (data.erro) {
+        document.getElementById('cliente-nome').innerText = "Não encontrado";
+        document.getElementById('orcamento-val').innerText = "-";
+        document.getElementById('criterios-val').innerText = "-";
+        document.getElementById('vistoria-status').innerText = "-";
+        document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">-</span></div>';
+        document.getElementById('obs-text').innerText = data.erro;
+        return;
       }
 
-      const cliente = getCellVal(2, 1);
-      const orcamento = getCellVal(3, 1);
-      const criterios = getCellVal(4, 1);
-      const etapa = getCellVal(5, 1);
-      const vistoria = getCellVal(6, 1);
-
-      const c1Name = getCellVal(2, 4), c1Status = getCellVal(2, 5);
-      const c2Name = getCellVal(3, 4), c2Status = getCellVal(3, 5);
-      const c3Name = getCellVal(4, 4), c3Status = getCellVal(4, 5);
-
-      const obs = getCellVal(18, 0);
-
-      document.getElementById('cliente-nome').innerText = cliente || "-";
-      document.getElementById('orcamento-val').innerText = orcamento || "-";
-      document.getElementById('criterios-val').innerText = criterios || "-";
-      document.getElementById('vistoria-status').innerText = vistoria || "-";
-      document.getElementById('obs-text').innerText = obs || "Sem observações no momento.";
+      document.getElementById('cliente-nome').innerText = data.cliente || "-";
+      document.getElementById('orcamento-val').innerText = data.orcamento || "-";
+      document.getElementById('criterios-val').innerText = data.criterios || "-";
+      document.getElementById('vistoria-status').innerText = data.vistoria || "-";
+      document.getElementById('obs-text').innerText = data.obs || "Sem observações no momento.";
 
       let carsHtml = '';
-      if(c1Name) carsHtml += `<div class="car-item"><span class="car-name">${c1Name} ${c1Status ? "(" + c1Status + ")" : ""}</span></div>`;
-      if(c2Name) carsHtml += `<div class="car-item"><span class="car-name">${c2Name} ${c2Status ? "(" + c2Status + ")" : ""}</span></div>`;
-      if(c3Name) carsHtml += `<div class="car-item"><span class="car-name">${c3Name} ${c3Status ? "(" + c3Status + ")" : ""}</span></div>`;
+      if(data.carro1) carsHtml += `<div class="car-item"><span class="car-name">${data.carro1}</span></div>`;
+      if(data.carro2) carsHtml += `<div class="car-item"><span class="car-name">${data.carro2}</span></div>`;
+      if(data.carro3) carsHtml += `<div class="car-item"><span class="car-name">${data.carro3}</span></div>`;
 
       document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
 
-      const currentStep = parseInt(String(etapa).charAt(0)) || 1;
+      const currentStep = parseInt(String(data.etapa).charAt(0)) || 1;
       const pct = (currentStep / 5) * 100;
 
       document.getElementById('progresso-pct').innerText = pct + '%';
@@ -365,7 +338,7 @@
     }
   }
 
-  carregarDadosCSV();
+  carregarDadosScript();
 </script>
 
 </body>
