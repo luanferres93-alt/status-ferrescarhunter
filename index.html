@@ -40,16 +40,18 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
 
-    /* Estilo do Logo */
+    /* Estilo do Logo - CORRIGIDO */
     .brand-logo-container {
       text-align: center;
       margin-bottom: 20px;
+      padding-top: 10px;
     }
     .brand-logo-image {
-      max-width: 120px; /* Tamanho do logo no mobile */
+      max-width: 150px; /* Aumentei um pouco para dar mais destaque */
       height: auto;
-      border-radius: 50%; /* Mantém o formato redondo do logo original */
-      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); /* Sombra dourada sutil */
+      display: block;
+      margin: 0 auto;
+      /* Removida a borda redonda forçada que causou erro */
     }
 
     /* Estilo do Header Ajustado */
@@ -59,15 +61,6 @@
       border-bottom: 1px solid var(--card-border);
       margin-bottom: 16px;
     }
-    .brand-logo-text { /* Estilo do texto de fallback se o logo falhar */
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      color: #ffffff;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .brand-logo-text span { color: var(--gold-light); }
     .brand-sub {
       font-size: 10px;
       color: var(--text-muted);
@@ -216,9 +209,9 @@
 <body>
 
 <div class="app-container">
-  <!-- Container do Logo -->
+  <!-- Container do Logo - Usando o arquivo local logo.png -->
   <div class="brand-logo-container">
-    <img src="https://image-gen.fotor.com/api/image/original?image_url=image_4.png&width=300" alt="Ferres Car Hunter Logo" class="brand-logo-image">
+    <img src="logo.png" alt="Ferres Car Hunter Logo" class="brand-logo-image">
   </div>
 
   <div class="brand-header">
