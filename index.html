@@ -460,10 +460,20 @@
     return `<span class="status-badge radar">${status}</span>`; // Padrão
   }
 
-  // Função principal para carregar dados do Google Sheets
+  /* 
+     ===========================================================
+     FUNÇÃO JS CORRIGIDA - LÓGICA DE ACESSO DUPLO (PRINCIPAL E INDIVIDUAL)
+     ===========================================================
+  */
   async function carregarDadosCSV() {
     const urlParams = new URLSearchParams(window.location.search);
-    const paramCliente = normalizarTexto(urlParams.get('c') || '');
+    let paramCliente = normalizarTexto(urlParams.get('c') || '');
+
+    /* 
+       Aba Principal (Slot_0): Este GID será carregado automaticamente 
+       quando o site for acessado sem nenhum parâmetro (?c=...)
+    */
+    const GID_PRINCIPAL = "1533210832"; 
 
     // Mapeamento das Abas de Acesso Individual (Slots Individuais)
     // A cada nova aba criada, adicione-a aqui com o GID correspondente.
@@ -486,19 +496,8 @@
     let gidParaCarregar = "";
     let modoAcessoDireto = false;
 
-    /* 
-       Aba Principal (Slot_0): Este GID será carregado automaticamente 
-       quando o site for acessado sem nenhum parâmetro (?c=...)
-    */
-    const GID_PRINCIPAL = "1533210832"; 
-
-    // 1. DETERMINAR QUAL ABA CARREGAR
-    if (paramCliente === "") {
-      /* MODO ACESSO DIRETO: URL sem parâmetro. Força o carregamento do Slot_0. */
-      gidParaCarregar = GID_PRINCIPAL;
-      modoAcessoDireto = true;
-      console.log("Acesso Direto Detectado. Carregando Slot_0 (GID Principal).");
-    } else {
+    // 1. DETERMINAR QUAL ABA CARREGAR (CORRIGIDO: Prioridade à busca individual)
+    if (paramCliente !== "") {
       /* MODO ACESSO INDIVIDUAL: Busca o slot correspondente na lista. */
       const slotMap = slotsIndividuais.find(s => s.id === paramCliente);
       if (slotMap) {
@@ -507,9 +506,14 @@
       } else {
         console.log(`Slot ${paramCliente} não encontrado na lista de acessos individuais.`);
       }
+    } else {
+      /* MODO ACESSO DIRETO: URL sem parâmetro. Força o carregamento do Slot_0. */
+      gidParaCarregar = GID_PRINCIPAL;
+      modoAcessoDireto = true;
+      console.log("Acesso Direto Detectado. Carregando Slot_0 (GID Principal).");
     }
 
-    // Se não determinamos um GID válido (parâmetro inválido), exibe erro
+    // Se não determinamos um GID válido (parâmetro inválido ou slot não listado), exibe erro
     if (gidParaCarregar === "") {
       exibirErro("Link inválido ou desativado.");
       return;
