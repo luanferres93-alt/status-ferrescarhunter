@@ -7,16 +7,16 @@
   <style>
     /* 
        =========================================
-       DEFINIÇÃO DE CORES E ESTILO PREMIUM (IGUAL IMAGEM)
+       DEFINIÇÃO DE CORES E ESTILO PREMIUM (BASEADO NO BRASÃO DOURADO)
        =========================================
     */
     :root {
       --bg-pure-black: #000000;     /* Preto Puro para o fundo */
-      --bg-card: #000000;           /* Fundo dos cartões preto tbm */
+      --bg-card: #000000;           /* Fundo dos cartões tbm preto */
       
-      --gold-border: #D4AF37;       /* Dourado para as bordas e realces */
+      --gold-border: #D4AF37;       /* Dourado Sophistication para bordas */
       --text-main: #ffffff;         /* Texto principal branco */
-      --text-gold: #D4AF37;         /* Texto secundário/títulos dourado */
+      --text-gold: #D4AF37;         /* Texto secundário dourado */
       
       --status-green: #28a745;
       --status-orange: #ff7f50;
@@ -39,7 +39,7 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center; /* Centraliza verticalmente */
+      align-items: center; /* Centraliza verticalmente se o cartão for pequeno */
       padding: 20px 15px;
       line-height: 1.6;
     }
@@ -48,22 +48,22 @@
       width: 100%;
       max-width: 480px;
       background-color: var(--bg-card);
-      border: 3px solid var(--gold-border); /* Borda dourada grossa */
-      border-radius: 28px;
+      border: 3px solid var(--gold-border); /* Borda dourada robusta */
+      border-radius: 28px; /* Cantos arredondados suavizados */
       padding: 35px 25px;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); /* Brilho dourado sutil */
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); /* Brilho dourado sutil */
     }
 
     /* 
        =========================================
-       CABEÇALHO COM LOGO DOURADA 3D
+       CABEÇALHO COM LOGO DOURADO 3D
        =========================================
     */
     .brand-header-container {
       text-align: center;
       margin-bottom: 25px;
       padding-bottom: 20px;
-      border-bottom: 3px solid rgba(212, 175, 55, 0.4); /* Linha divisória dourada sutil */
+      border-bottom: 3px solid rgba(212, 175, 55, 0.4); /* Linha divisória dourada */
     }
 
     .brand-logo-image {
@@ -161,7 +161,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #111; /* Cinza bem escuro pra destacar */
+      background-color: #111; /* Cinza bem escuro para destacar */
       border: 3px solid var(--gold-border);
       border-radius: 16px;
       padding: 14px 20px;
@@ -229,7 +229,7 @@
 
     /* 
        =========================================
-       LINHA DO TEMPO (ESTILO REPLICADO)
+       LINHA DO TEMPO (CORRIGIDO: Inserido novamente com estilo imponente)
        =========================================
     */
     .timeline {
@@ -265,7 +265,7 @@
       transition: all 0.3s ease;
     }
     
-    /* Estados da Timeline */
+    /* Estados da Timeline Inteligentes */
     .step.completed .step-dot { background-color: var(--status-green); border-color: var(--status-green); }
     .step.active .step-dot { background-color: var(--text-gold); border-color: var(--text-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
 
@@ -306,9 +306,9 @@
 <body>
 
 <div class="app-container">
-  <!-- Cabeçalho com Logo Dourada e Brilhante (Usando o caminho do GitHub Pages) -->
+  <!-- Cabeçalho com Logo Dourado e Brilhante -->
   <div class="brand-header-container">
-    <img src="https://luanferres93-alt.github.io/status-ferrescarhunter/atualizado.jpeg" alt="Ferres Car Hunter Dourado" class="brand-logo-image">
+    <img src="https://luanferres93-alt.github.io/status-ferrescarhunter/atualizado.jpeg" alt="Ferres Car Hunter Dourado Imponente" class="brand-logo-image">
     <div class="brand-logo-text">FERRES <span>CAR HUNTER</span></div>
     <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
   </div>
@@ -333,13 +333,13 @@
     </div>
   </div>
 
-  <!-- Modelos no Radar -->
+  <!-- Modelos no Radar com Badges Coloridos -->
   <div class="info-section">
     <div class="section-title">
       <span>🚘</span> Modelos no Radar
     </div>
     <div id="cars-list">
-      <div class="car-item-container"><span class="car-name">Buscando...</span></div>
+      <div class="car-item-container"><span class="car-name">Buscando as melhores opções...</span></div>
     </div>
   </div>
 
@@ -354,7 +354,7 @@
     </div>
   </div>
 
-  <!-- Linha do Tempo do Processo (CORRIGIDO: Inserida novamente) -->
+  <!-- Linha do Tempo do Processo (CORRIGIDO: Inserido novamente) -->
   <div class="info-section">
     <div class="section-title">
       <span>📌</span> Linha do Tempo do Processo
@@ -407,7 +407,7 @@
 </div>
 
 <script>
-  // Helper para parsear o CSV
+  // Helper para parsear o CSV do Google Sheets
   function parseCSV(text) {
     let p = '', c = '', r = [];
     let q = false;
@@ -441,7 +441,7 @@
       .replace(/[^a-z0-9]/g, "");
   }
 
-  // Helper para formatar badges coloridos
+  // Helper para formatar badges coloridos da lista de carros
   function formatCarBadge(status) {
     if (!status) return '';
     const s = status.toLowerCase();
@@ -475,7 +475,7 @@
 
     // Busca nas abas
     for (const slot of slots) {
-      // URL para download do CSV da aba específica
+      // URL para download do CSV da aba específica (com t=timestamp para evitar cache)
       const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
       try {
@@ -523,14 +523,14 @@
       return;
     }
 
-    // Preenche os dados básicos no novo design
+    // Preenche os dados básicos no novo design imponente
     document.getElementById('cliente-nome').innerText = dadosEncontrados.cliente || "-";
     document.getElementById('orcamento-val').innerText = dadosEncontrados.orcamento || "-";
     document.getElementById('criterios-val').innerText = dadosEncontrados.criterios || "-";
     document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "Em andamento";
-    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "A busca continua. Estamos monitorando o mercado para garantir a melhor negociação.";
+    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "A busca continua. Nossos especialistas estão monitorando o mercado.";
 
-    // Preenche a lista de carros com badges coloridos
+    // Preenche a lista de carros com badges coloridos e imponentes
     let carsHtml = '';
     
     if(dadosEncontrados.c1Name) {
@@ -543,33 +543,33 @@
       carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c3Name}</span>${formatCarBadge(dadosEncontrados.c3Status)}</div>`;
     }
 
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item-container"><span class="car-name">Nenhum veículo em destaque no momento...</span></div>';
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item-container"><span class="car-name">Buscando as melhores opções no mercado...</span></div>';
 
-    // Animação da Barra de Progresso Neon e Atualização da Timeline
+    // Animação da Barra de Progresso Neon e Atualização Inteligente da Timeline
     const currentStep = parseInt(String(dadosEncontrados.etapa).charAt(0)) || 1;
     const pct = (currentStep / 5) * 100;
 
     document.getElementById('progresso-pct').innerText = pct + '%';
-    // Pequeno delay para acionar a animação
+    // Timeout para gatilhar a animação de preenchimento
     setTimeout(() => {
       document.getElementById('progresso-bar').style.width = pct + '%';
     }, 150);
 
-    // Atualização da Timeline (CORRIGIDO: Lógica reinserida)
+    // Atualização Inteligente da Timeline (CORRIGIDO: Reinserido a lógica e o HTML)
     for (let i = 1; i <= 5; i++) {
       const el = document.getElementById('step-' + i);
       if(el) {
         el.classList.remove('completed', 'active');
         if (i < currentStep) {
-          el.classList.add('completed');
+          el.classList.add('completed'); // Passos anteriores: verde
         } else if (i === currentStep) {
-          el.classList.add('active');
+          el.classList.add('active'); // Passo atual: dourado brilhante
         }
       }
     }
   }
 
-  // Inicia o processo
+  // Inicia o processo de carregamento de dados
   carregarDadosCSV();
 </script>
 
