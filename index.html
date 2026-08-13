@@ -320,7 +320,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    // Mapeamento das 10 Abas (Slots) da Planilha
+    // Mapeamento das 11 Abas (Slots) da Planilha
     const slots = [
       { id: "slot01", gid: "0" },
       { id: "slot02", gid: "351050736" },
@@ -331,7 +331,8 @@
       { id: "slot07", gid: "675909700" },
       { id: "slot08", gid: "1270805133" },
       { id: "slot09", gid: "1333926826" },
-      { id: "slot10", gid: "167400982" }
+      { id: "slot10", gid: "167400982" },
+      { id: "slot11", gid: "673193521" }
     ];
 
     let dadosEncontrados = null;
@@ -352,7 +353,7 @@
         const clientePlanilha = getCellVal(2, 1);
         const clienteNorm = normalizarTexto(clientePlanilha);
 
-        // Se o parâmetro for direto pelo nome do slot (ex: ?c=slot03) ou se contiver o nome do cliente
+        // Se o parâmetro for direto pelo nome do slot (ex: ?c=slot11) ou se contiver o nome do cliente
         if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
           dadosEncontrados = {
             cliente: clientePlanilha,
