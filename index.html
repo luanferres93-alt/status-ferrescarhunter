@@ -5,87 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ferres Car Hunter — Portal do Cliente</title>
   <style>
+    /* 
+       =========================================
+       SISTEMA DE CORES E VARIÁVEIS (PROFISSIONAL)
+       =========================================
+    */
     :root {
-      --bg: #0b0f17;
-      --card-bg: #161e2e;
-      --card-border: #232d3f;
-      --gold: #d97706;
-      --gold-light: #f59e0b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --green: #10b981;
-      --green-bg: rgba(16, 185, 129, 0.15);
+      --bg-deep: #080a10;           /* Fundo da página mais profundo */
+      --card-main: #101520;         /* Cartão principal */
+      --card-inner: #161c2a;        /* Cartões internos */
+      --card-border: #1e2638;       /* Bordas sutis */
+      
+      --gold-premium: #b59410;      /* Dourado mais fechado e sofisticado */
+      --gold-light: #e6c64c;        /* Dourado para realces */
+      
+      --text-main: #ffffff;         /* Texto puro */
+      --text-muted: #8b9bb4;        /* Texto secundário/rótulos */
+      
+      --green-status: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.1);
+      
+      --orange-status: #f97316;
+      --orange-bg: rgba(249, 115, 22, 0.1);
+
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* 
+       =========================================
+       RESET E ESTILOS GERAIS
+       =========================================
+    */
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
     body {
-      background-color: var(--bg);
+      background-color: var(--bg-deep);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: var(--font-family);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 16px 12px;
+      align-items: center; /* Centraliza verticalmente se o cartão for pequeno */
+      padding: 20px 15px;
+      line-height: 1.5;
     }
 
+    /* 
+       =========================================
+       CONTAINER PRINCIPAL (O CARTÃO)
+       =========================================
+    */
     .app-container {
       width: 100%;
-      max-width: 460px;
-      background: #0f172a;
+      max-width: 480px;
+      background-color: var(--card-main);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 20px 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      border-radius: 28px; /* Cantos mais suaves */
+      padding: 30px 20px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7); /* Sombra mais difusa e profissional */
+      transition: transform 0.3s ease;
     }
 
-    /* Estilo do Logo - Usando a imagem atualizado.jpeg */
+    /* 
+       =========================================
+       CABEÇALHO COM LOGO AMPLIADO
+       =========================================
+    */
     .brand-logo-container {
       text-align: center;
-      margin-bottom: 20px;
-      padding-top: 10px;
+      margin-bottom: 25px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .brand-logo-image {
-      max-width: 180px; /* Tamanho ajustado para destacar a nova imagem */
+      max-width: 200px; /* AMPLIADO conforme pedido */
       height: auto;
       display: block;
       object-fit: contain;
-      border-radius: 10px; /* Borda levemente arredondada para combinar com o portal */
+      /* Trato visual: sutil brilho dourado atrás do logo integrado */
+      filter: drop-shadow(0 0 15px rgba(181, 148, 16, 0.3)); 
     }
 
-    /* Estilo do Header Ajustado */
     .brand-header {
       text-align: center;
-      padding-bottom: 12px;
+      padding-bottom: 20px;
       border-bottom: 1px solid var(--card-border);
-      margin-bottom: 16px;
+      margin-bottom: 25px;
     }
+    
+    /* LETRAS EM BAIXO - TOQUE PROFISSIONAL */
     .brand-sub {
-      font-size: 10px;
-      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold-premium); /* Cor dourada sofisticada */
       text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-top: 2px;
+      letter-spacing: 2.5px; /* Mais espaçamento para elegância */
+      opacity: 0.9;
     }
 
-    /* Resto dos estilos existentes */
+    /* 
+       =========================================
+       CARTÕES DE INFORMAÇÃO E SEÇÕES
+       =========================================
+    */
     .info-card {
-      background: var(--card-bg);
+      background-color: var(--card-inner);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 16px;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
     }
 
+    /* Rótulos e Valores */
     .info-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
+      align-items: flex-start;
+      margin-bottom: 12px;
     }
     .info-row:last-child { margin-bottom: 0; }
 
@@ -94,125 +131,203 @@
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      padding-top: 2px;
     }
 
     .info-value {
-      font-size: 13px;
-      font-weight: 700;
-      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
       text-align: right;
+      max-width: 65%; /* Evita que o valor empurre o rótulo */
     }
 
+    /* Badge de Status de Vistoria */
     .status-badge {
       display: inline-block;
-      padding: 4px 10px;
+      padding: 6px 14px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
-      background: var(--green-bg);
-      color: var(--green);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      letter-spacing: 0.5px;
+      background-color: var(--green-bg);
+      color: var(--green-status);
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
+    /* Títulos de Seção */
     .section-title {
       font-size: 11px;
       font-weight: 800;
       color: var(--gold-light);
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
+      letter-spacing: 1.5px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
+    /* 
+       =========================================
+       MODELOS NO RADAR (LISTA PREMIUM)
+       =========================================
+    */
     .car-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #0b0f17;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
+      background-color: rgba(0,0,0,0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      transition: background-color 0.2s ease;
     }
     .car-item:last-child { margin-bottom: 0; }
-    .car-name { font-size: 12px; font-weight: 700; color: #ffffff; }
+    .car-item:hover { background-color: rgba(255,255,255,0.03); }
+
+    .car-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
+    
+    /* Status individual do carro */
+    .car-status-dot {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .car-status-dot.escolhido { background-color: var(--green-bg); color: var(--green-status); }
+    .car-status-dot.analise { background-color: var(--orange-bg); color: var(--orange-status); }
+    .car-status-dot.radar { background-color: rgba(139, 155, 180, 0.1); color: var(--text-muted); }
+
+    /* 
+       =========================================
+       BARRA DE PROGRESSO
+       =========================================
+    */
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .progress-pct {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
 
     .progress-track {
       width: 100%;
-      height: 10px;
-      background: #0b0f17;
-      border-radius: 20px;
+      height: 12px;
+      background-color: rgba(0,0,0,0.3);
+      border-radius: 10px;
       overflow: hidden;
-      border: 1px solid #1e293b;
-      margin-top: 6px;
+      border: 1px solid var(--card-border);
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-      width: 0%;
-      border-radius: 20px;
-      transition: width 0.6s ease;
+      background: linear-gradient(90deg, var(--gold-premium), var(--gold-light));
+      width: 0%; /* Definido via JS */
+      border-radius: 10px;
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); /* Animação suave */
+      box-shadow: 0 0 10px rgba(230, 198, 76, 0.5);
     }
 
+    /* 
+       =========================================
+       LINHA DO TEMPO (MINIMALISTA)
+       =========================================
+    */
     .timeline {
       position: relative;
-      padding-left: 20px;
-      margin-top: 12px;
+      padding-left: 25px;
+      margin-top: 15px;
     }
     .timeline::before {
       content: '';
       position: absolute;
-      left: 6px;
-      top: 4px;
-      bottom: 4px;
+      left: 7px;
+      top: 5px;
+      bottom: 5px;
       width: 2px;
-      background: #1e293b;
+      background-color: var(--card-border);
     }
-    .step { position: relative; margin-bottom: 16px; }
+
+    .step {
+      position: relative;
+      margin-bottom: 20px;
+    }
     .step:last-child { margin-bottom: 0; }
     
     .step-dot {
       position: absolute;
-      left: -20px;
-      top: 2px;
-      width: 12px;
-      height: 12px;
+      left: -25px;
+      top: 3px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: #0f172a;
-      border: 2px solid #334155;
+      background-color: var(--card-inner);
+      border: 3px solid var(--card-border);
+      transition: all 0.3s ease;
     }
-    .step.completed .step-dot { background: var(--green); border-color: var(--green); }
-    .step.active .step-dot { background: var(--gold-light); border-color: var(--gold-light); }
+    
+    /* Estados da Timeline */
+    .step.completed .step-dot { background-color: var(--green-status); border-color: var(--green-status); }
+    .step.active .step-dot { background-color: var(--gold-light); border-color: var(--gold-light); box-shadow: 0 0 10px var(--gold-light); }
 
-    .step-name { font-size: 12px; font-weight: 700; color: #64748b; }
-    .step.completed .step-name { color: #ffffff; }
-    .step.active .step-name { color: var(--gold-light); }
+    .step-content { padding-left: 5px; }
+    .step-name { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+    .step.completed .step-name, .step.active .step-name { color: var(--text-main); }
+    
+    .step-desc { font-size: 11px; color: rgba(139, 155, 180, 0.7); margin-top: 3px; }
+    .step.active .step-desc { color: var(--text-muted); }
 
-    .step-desc { font-size: 10px; color: #475569; margin-top: 2px; line-height: 1.3; }
-    .step.active .step-desc { color: #94a3b8; }
-
+    /* 
+       =========================================
+       CAIXA DE OBSERVAÇÃO TÁTICA
+       =========================================
+    */
     .obs-box {
-      background: rgba(245, 158, 11, 0.08);
-      border-left: 3px solid var(--gold-light);
-      border-radius: 0 10px 10px 0;
-      padding: 12px;
+      background-color: rgba(181, 148, 16, 0.05); /* Fundo dourado bem sutil */
+      border-left: 4px solid var(--gold-premium);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
     }
-    .obs-text { font-size: 12px; color: #e2e8f0; line-height: 1.4; }
+    .obs-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .obs-text {
+      font-size: 12px;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
 
+    /* FOOTER */
     .app-footer {
       text-align: center;
-      font-size: 9px;
-      color: #475569;
-      margin-top: 16px;
-      padding-top: 10px;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 25px;
+      padding-top: 15px;
       border-top: 1px solid var(--card-border);
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- Container do Logo - Apontando para o arquivo atualizado.jpeg -->
+  <!-- Cabeçalho com Logo Ampliado -->
   <div class="brand-logo-container">
     <img src="atualizado.jpeg" alt="Ferres Car Hunter Logo" class="brand-logo-image">
   </div>
@@ -221,7 +336,7 @@
     <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
   </div>
 
-  <!-- Resto do portal -->
+  <!-- Cartão Principal de Dados -->
   <div class="info-card">
     <div class="info-row">
       <span class="info-label">CLIENTE</span>
@@ -233,64 +348,82 @@
     </div>
     <div class="info-row">
       <span class="info-label">CRITÉRIOS</span>
-      <span class="info-value" id="criterios-val" style="font-size: 11px; color: #94a3b8;">Carregando...</span>
+      <span class="info-value" id="criterios-val" style="font-size: 12px; color: var(--text-muted);">Carregando...</span>
     </div>
-    <div class="info-row" style="margin-top: 10px;">
+    <div class="info-row" style="margin-top: 15px; align-items: center;">
       <span class="info-label">RESULTADO VISTORIA</span>
       <span class="status-badge" id="vistoria-status">Carregando...</span>
     </div>
   </div>
 
+  <!-- Carros no Radar -->
   <div class="info-card">
-    <div class="section-title">🚘 Modelos no Radar</div>
+    <div class="section-title">
+      <span>🚘</span> Modelos no Radar
+    </div>
     <div id="cars-list">
       <div class="car-item"><span class="car-name">Carregando modelos...</span></div>
     </div>
   </div>
 
+  <!-- Progresso Geral -->
   <div class="info-card">
-    <div class="info-row">
+    <div class="progress-header">
       <span class="info-label">Progresso Geral</span>
-      <span class="info-value" id="progresso-pct" style="color: var(--gold-light);">0%</span>
+      <span class="progress-pct" id="progresso-pct">0%</span>
     </div>
     <div class="progress-track">
       <div class="progress-fill" id="progresso-bar"></div>
     </div>
   </div>
 
+  <!-- Linha do Tempo -->
   <div class="info-card">
-    <div class="section-title">📌 Linha do Tempo do Processo</div>
+    <div class="section-title">
+      <span>📌</span> Linha do Tempo do Processo
+    </div>
     <div class="timeline">
       <div class="step" id="step-1">
         <div class="step-dot"></div>
-        <div class="step-name">1 - Pesquisando</div>
-        <div class="step-desc">Buscando opções no mercado conforme perfil</div>
+        <div class="step-content">
+          <div class="step-name">1 - Pesquisando</div>
+          <div class="step-desc">Buscando opções no mercado conforme perfil</div>
+        </div>
       </div>
       <div class="step" id="step-2">
         <div class="step-dot"></div>
-        <div class="step-name">2 - Carro-alvo detectado</div>
-        <div class="step-desc">Seleção de veículo de alto potencial</div>
+        <div class="step-content">
+          <div class="step-name">2 - Carro-alvo detectado</div>
+          <div class="step-desc">Seleção de veículo de alto potencial</div>
+        </div>
       </div>
       <div class="step" id="step-3">
         <div class="step-dot"></div>
-        <div class="step-name">3 - Vistoria agendada</div>
-        <div class="step-desc">Inspeção presencial agendada</div>
+        <div class="step-content">
+          <div class="step-name">3 - Vistoria agendada</div>
+          <div class="step-desc">Inspeção presencial agendada</div>
+        </div>
       </div>
       <div class="step" id="step-4">
         <div class="step-dot"></div>
-        <div class="step-name">4 - Resultado da vistoria</div>
-        <div class="step-desc">Emissão e validação do laudo técnico</div>
+        <div class="step-content">
+          <div class="step-name">4 - Resultado da vistoria</div>
+          <div class="step-desc">Emissão e validação do laudo técnico</div>
+        </div>
       </div>
       <div class="step" id="step-5">
         <div class="step-dot"></div>
-        <div class="step-name">5 - Negócio fechado</div>
-        <div class="step-desc">Negociação final e entrega do carro</div>
+        <div class="step-content">
+          <div class="step-name">5 - Negócio fechado</div>
+          <div class="step-desc">Negociação final e entrega do carro</div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Caixa de Observação Tática -->
   <div class="obs-box">
-    <div class="section-title" style="margin-bottom: 4px;">💬 Observação Tática / Próximo Passo</div>
+    <div class="obs-title">💬 Observação Tática / Próximo Passo</div>
     <div class="obs-text" id="obs-text">Carregando dados...</div>
   </div>
 
@@ -300,6 +433,7 @@
 </div>
 
 <script>
+  // Função para parsear CSV (mantida para compatibilidade)
   function parseCSV(text) {
     let p = '', c = '', r = [];
     let q = false;
@@ -324,6 +458,7 @@
     return r;
   }
 
+  // Função para normalizar texto (mantida para busca)
   function normalizarTexto(txt) {
     return String(txt || "")
       .toLowerCase()
@@ -332,10 +467,12 @@
       .replace(/[^a-z0-9]/g, "");
   }
 
+  // Função principal para carregar os dados
   async function carregarDadosCSV() {
     const urlParams = new URLSearchParams(window.location.search);
     const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
+    // Mapeamento das 11 Abas (Slots)
     const slots = [
       { id: "slot01", gid: "0" },
       { id: "slot02", gid: "351050736" },
@@ -352,6 +489,7 @@
 
     let dadosEncontrados = null;
 
+    // Busca nas abas
     for (const slot of slots) {
       const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
@@ -367,6 +505,7 @@
         const clientePlanilha = getCellVal(2, 1);
         const clienteNorm = normalizarTexto(clientePlanilha);
 
+        // Verifica match
         if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
           dadosEncontrados = {
             cliente: clientePlanilha,
@@ -379,54 +518,83 @@
             c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
             obs: getCellVal(18, 0)
           };
-          break;
+          break; // Para a busca se encontrar
         }
       } catch (err) {
         console.error("Erro ao carregar slot:", slot.id, err);
       }
     }
 
+    // Se não encontrar dados, exibe tela de erro amigável
     if (!dadosEncontrados) {
       document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
       document.getElementById('orcamento-val').innerText = "-";
       document.getElementById('criterios-val').innerText = "-";
-      document.getElementById('vistoria-status').innerText = "-";
-      document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">Link desativado ou inválido</span></div>';
-      document.getElementById('obs-text').innerText = "Este portal de acompanhamento não está mais ativo para o link acessado.";
+      document.getElementById('vistoria-status').style.display = 'none';
+      document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name">Link desativado ou inválido.</span></div>';
+      document.getElementById('obs-text').innerText = "Por favor, verifique o link ou entre em contato para mais informações.";
       document.getElementById('progresso-pct').innerText = '0%';
       document.getElementById('progresso-bar').style.width = '0%';
       return;
     }
 
+    // Preenche os dados básicos com a nova estrutura
     document.getElementById('cliente-nome').innerText = dadosEncontrados.cliente || "-";
     document.getElementById('orcamento-val').innerText = dadosEncontrados.orcamento || "-";
     document.getElementById('criterios-val').innerText = dadosEncontrados.criterios || "-";
-    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "-";
-    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "Sem observações no momento.";
+    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "Em análise";
+    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "Sem observações táticas no momento. A busca continua.";
 
+    // Lista de carros com estilo premium e status
     let carsHtml = '';
-    if(dadosEncontrados.c1Name) carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c1Name} ${dadosEncontrados.c1Status ? "(" + dadosEncontrados.c1Status + ")" : ""}</span></div>`;
-    if(dadosEncontrados.c2Name) carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c2Name} ${dadosEncontrados.c2Status ? "(" + dadosEncontrados.c2Status + ")" : ""}</span></div>`;
-    if(dadosEncontrados.c3Name) carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c3Name} ${dadosEncontrados.c3Status ? "(" + dadosEncontrados.c3Status + ")" : ""}</span></div>`;
+    
+    // Helper para formatar o status individual do carro
+    function formatCarStatus(status) {
+      if (!status) return '';
+      const s = status.toLowerCase();
+      if (s.includes('escolhido')) return `<span class="car-status-dot escolhido">Escolhido</span>`;
+      if (s.includes('analise')) return `<span class="car-status-dot analise">Em Análise</span>`;
+      if (s.includes('radar')) return `<span class="car-status-dot radar">No Radar</span>`;
+      return `<span class="car-status-dot radar">${status}</span>`; // Padrão
+    }
 
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo cadastrado</span></div>';
+    if(dadosEncontrados.c1Name) {
+      carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c1Name}</span>${formatCarStatus(dadosEncontrados.c1Status)}</div>`;
+    }
+    if(dadosEncontrados.c2Name) {
+      carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c2Name}</span>${formatCarStatus(dadosEncontrados.c2Status)}</div>`;
+    }
+    if(dadosEncontrados.c3Name) {
+      carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c3Name}</span>${formatCarStatus(dadosEncontrados.c3Status)}</div>`;
+    }
 
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Nenhum veículo em destaque no momento.</span></div>';
+
+    // Cálculo e Animação de Progresso
     const currentStep = parseInt(String(dadosEncontrados.etapa).charAt(0)) || 1;
     const pct = (currentStep / 5) * 100;
 
     document.getElementById('progresso-pct').innerText = pct + '%';
-    document.getElementById('progresso-bar').style.width = pct + '%';
+    // Timeout para gatilhar a animação de preenchimento
+    setTimeout(() => {
+      document.getElementById('progresso-bar').style.width = pct + '%';
+    }, 100);
 
+    // Atualização da Timeline Minimalista
     for (let i = 1; i <= 5; i++) {
       const el = document.getElementById('step-' + i);
       if(el) {
         el.classList.remove('completed', 'active');
-        if (i < currentStep) el.classList.add('completed');
-        else if (i === currentStep) el.classList.add('active');
+        if (i < currentStep) {
+          el.classList.add('completed');
+        } else if (i === currentStep) {
+          el.classList.add('active');
+        }
       }
     }
   }
 
+  // Inicia o carregamento
   carregarDadosCSV();
 </script>
 
