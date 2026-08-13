@@ -40,20 +40,34 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
 
+    /* Estilo do Logo */
+    .brand-logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .brand-logo-image {
+      max-width: 120px; /* Tamanho do logo no mobile */
+      height: auto;
+      border-radius: 50%; /* Mantém o formato redondo do logo original */
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); /* Sombra dourada sutil */
+    }
+
+    /* Estilo do Header Ajustado */
     .brand-header {
       text-align: center;
-      padding-bottom: 16px;
+      padding-bottom: 12px;
       border-bottom: 1px solid var(--card-border);
       margin-bottom: 16px;
     }
-    .brand-logo {
+    .brand-logo-text { /* Estilo do texto de fallback se o logo falhar */
       font-size: 18px;
       font-weight: 900;
       letter-spacing: 1.5px;
       color: #ffffff;
       text-transform: uppercase;
+      margin-bottom: 4px;
     }
-    .brand-logo span { color: var(--gold-light); }
+    .brand-logo-text span { color: var(--gold-light); }
     .brand-sub {
       font-size: 10px;
       color: var(--text-muted);
@@ -62,6 +76,7 @@
       margin-top: 2px;
     }
 
+    /* Resto dos estilos existentes */
     .info-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -201,11 +216,16 @@
 <body>
 
 <div class="app-container">
+  <!-- Container do Logo -->
+  <div class="brand-logo-container">
+    <img src="https://image-gen.fotor.com/api/image/original?image_url=image_4.png&width=300" alt="Ferres Car Hunter Logo" class="brand-logo-image">
+  </div>
+
   <div class="brand-header">
-    <div class="brand-logo">FERRES <span>CAR HUNTER</span></div>
     <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
   </div>
 
+  <!-- Resto do portal -->
   <div class="info-card">
     <div class="info-row">
       <span class="info-label">CLIENTE</span>
@@ -320,7 +340,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    // Mapeamento das 11 Abas (Slots) da Planilha
     const slots = [
       { id: "slot01", gid: "0" },
       { id: "slot02", gid: "351050736" },
@@ -337,7 +356,6 @@
 
     let dadosEncontrados = null;
 
-    // Percorre as abas mapeadas para buscar o cliente correspondente
     for (const slot of slots) {
       const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
@@ -353,7 +371,6 @@
         const clientePlanilha = getCellVal(2, 1);
         const clienteNorm = normalizarTexto(clientePlanilha);
 
-        // Se o parâmetro for direto pelo nome do slot (ex: ?c=slot11) ou se contiver o nome do cliente
         if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
           dadosEncontrados = {
             cliente: clientePlanilha,
@@ -366,7 +383,7 @@
             c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
             obs: getCellVal(18, 0)
           };
-          break; // Encontrou o cliente, encerra a busca
+          break;
         }
       } catch (err) {
         console.error("Erro ao carregar slot:", slot.id, err);
