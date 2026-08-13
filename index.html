@@ -238,7 +238,7 @@
 
     /* 
        =========================================
-       LINHA DO TEMPO (CORRIGIDO: Inserido novamente e mapeado ao JS)
+       LINHA DO TEMPO (CORRIGIDO: Inserido novamente com estilo imponente)
        =========================================
     */
     .timeline {
@@ -460,25 +460,14 @@
     return `<span class="status-badge radar">${status}</span>`; // Padrão
   }
 
-  /* 
-     ===========================================================
-     FUNÇÃO JS CORRIGIDA - LÓGICA DE ACESSO DUPLO (PRINCIPAL E INDIVIDUAL)
-     ===========================================================
-  */
+  // Função principal para carregar dados do Google Sheets
   async function carregarDadosCSV() {
     const urlParams = new URLSearchParams(window.location.search);
-    let paramCliente = normalizarTexto(urlParams.get('c') || '');
+    const paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    /* 
-       Aba Principal (Slot_0): Este GID será carregado automaticamente 
-       quando o site for acessado sem nenhum parâmetro (?c=...)
-    */
-    const GID_PRINCIPAL = "1533210832"; 
-
-    // Mapeamento das Abas de Acesso Individual (Slots Individuais)
-    // A cada nova aba criada, adicione-a aqui com o GID correspondente.
-    const slotsIndividuais = [
-      { id: "slot01", gid: "0" }, 
+    // Mapeamento das 11 Abas (Slots)
+    const slots = [
+      { id: "slot01", gid: "0" },
       { id: "slot02", gid: "351050736" },
       { id: "slot03", gid: "1472927648" },
       { id: "slot04", gid: "592480650" },
@@ -489,146 +478,110 @@
       { id: "slot09", gid: "1333926826" },
       { id: "slot10", gid: "167400982" },
       { id: "slot11", gid: "673193521" }
-      // Adicione novas linhas aqui: { id: "slot12", gid: "NOVO_GID" },
     ];
 
     let dadosEncontrados = null;
-    let gidParaCarregar = "";
-    let modoAcessoDireto = false;
 
-    // 1. DETERMINAR QUAL ABA CARREGAR (CORRIGIDO: Prioridade à busca individual)
-    if (paramCliente !== "") {
-      /* MODO ACESSO INDIVIDUAL: Busca o slot correspondente na lista. */
-      const slotMap = slotsIndividuais.find(s => s.id === paramCliente);
-      if (slotMap) {
-        gidParaCarregar = slotMap.gid;
-        console.log(`Acesso Individual Detectado para ${paramCliente}. Carregando GID ${gidParaCarregar}.`);
-      } else {
-        console.log(`Slot ${paramCliente} não encontrado na lista de acessos individuais.`);
+    // Busca nas abas
+    for (const slot of slots) {
+      // URL para download do CSV da aba específica (com t=timestamp para evitar cache)
+      const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
+
+      try {
+        const response = await fetch(csvUrl);
+        const text = await response.text();
+        const rows = parseCSV(text);
+
+        function getCellVal(r, c) {
+          return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
+        }
+
+        const clientePlanilha = getCellVal(2, 1);
+        const clienteNorm = normalizarTexto(clientePlanilha);
+
+        // Match do cliente
+        if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
+          dadosEncontrados = {
+            cliente: clientePlanilha,
+            orcamento: getCellVal(3, 1),
+            criterios: getCellVal(4, 1),
+            etapa: getCellVal(5, 1),
+            vistoria: getCellVal(6, 1),
+            c1Name: getCellVal(2, 4), c1Status: getCellVal(2, 5),
+            c2Name: getCellVal(3, 4), c2Status: getCellVal(3, 5),
+            c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
+            obs: getCellVal(18, 0)
+          };
+          break; // Para a busca se encontrar
+        }
+      } catch (err) {
+        console.error("Erro ao carregar slot:", slot.id, err);
       }
-    } else {
-      /* MODO ACESSO DIRETO: URL sem parâmetro. Força o carregamento do Slot_0. */
-      gidParaCarregar = GID_PRINCIPAL;
-      modoAcessoDireto = true;
-      console.log("Acesso Direto Detectado. Carregando Slot_0 (GID Principal).");
     }
 
-    // Se não determinamos um GID válido (parâmetro inválido ou slot não listado), exibe erro
-    if (gidParaCarregar === "") {
-      exibirErro("Link inválido ou desativado.");
+    // Se não encontrar dados, exibe tela de erro
+    if (!dadosEncontrados) {
+      document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
+      document.getElementById('orcamento-val').innerText = "-";
+      document.getElementById('criterios-val').innerText = "-";
+      document.getElementById('vistoria-status').style.display = 'none';
+      document.getElementById('cars-list').innerHTML = '<div class="car-item-container"><span class="car-name" style="color: var(--text-gold);">Link desativado ou inválido.</span></div>';
+      document.getElementById('obs-text').innerText = "Por favor, verifique o link ou entre em contato para mais informações.";
+      document.getElementById('progresso-pct').innerText = '0%';
+      document.getElementById('progresso-bar').style.width = '0%';
       return;
     }
 
-    // 2. BUSCAR DADOS NA PLANILHA
-    const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${gidParaCarregar}&single=true&output=csv&t=${new Date().getTime()}`;
+    // Preenche os dados básicos no novo design imponente
+    document.getElementById('cliente-nome').innerText = dadosEncontrados.cliente || "-";
+    document.getElementById('orcamento-val').innerText = dadosEncontrados.orcamento || "-";
+    document.getElementById('criterios-val').innerText = dadosEncontrados.criterios || "-";
+    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "Em andamento";
+    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "A busca continua. Nossos especialistas estão monitorando o mercado.";
 
-    try {
-      const response = await fetch(csvUrl);
-      const text = await response.text();
-      const rows = parseCSV(text);
-
-      function getCellVal(r, c) {
-        return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
-      }
-
-      const clientePlanilha = getCellVal(2, 1);
-      const clienteNorm = normalizarTexto(clientePlanilha);
-
-      // 3. VALIDAR DADOS
-      let validacaoSucesso = false;
-
-      if (modoAcessoDireto) {
-        /* No modo acesso direto ao Slot_0, não validamos nome, apenas carregamos. */
-        validacaoSucesso = true;
-      } else {
-        /* No modo individual, validamos se o nome na aba bate com o parâmetro da busca. */
-        if (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)) {
-          validacaoSucesso = true;
-        }
-      }
-
-      if (validacaoSucesso) {
-        dadosEncontrados = {
-          cliente: clientePlanilha,
-          orcamento: getCellVal(3, 1),
-          criterios: getCellVal(4, 1),
-          etapa: getCellVal(5, 1),
-          vistoria: getCellVal(6, 1),
-          c1Name: getCellVal(2, 4), c1Status: getCellVal(2, 5),
-          c2Name: getCellVal(3, 4), c2Status: getCellVal(3, 5),
-          c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
-          obs: getCellVal(18, 0)
-        };
-      }
-    } catch (err) {
-      console.error("Erro ao carregar dados do GSheet:", err);
-    }
-
-    // 4. PREENCHER TELA OU EXIBIR ERRO
-    if (dadosEncontrados) {
-      preencherTelaComDados(dadosEncontrados);
-    } else {
-      exibirErro(modoAcessoDireto ? "Erro ao carregar os dados principais." : "Cliente Não Encontrado.");
-    }
-  }
-
-  // Função para preencher os elementos HTML com os dados
-  function preencherTelaComDados(dados) {
-    document.getElementById('cliente-nome').innerText = dados.cliente || "-";
-    document.getElementById('orcamento-val').innerText = dados.orcamento || "-";
-    document.getElementById('criterios-val').innerText = dados.criterios || "-";
-    
-    // Status de Vistoria
-    const vistoriaEl = document.getElementById('vistoria-status');
-    if (vistoriaEl) {
-        vistoriaEl.style.display = 'inline-block'; // Garante que reapareça
-        vistoriaEl.innerText = dados.vistoria || "Em análise";
-    }
-    
-    document.getElementById('obs-text').innerText = dados.obs || "A busca continua. Nossos especialistas estão monitorando o mercado.";
-
-    // Lista de carros
+    // Preenche a lista de carros com badges coloridos e imponentes
     let carsHtml = '';
-    if(dados.c1Name) carsHtml += `<div class="car-item-container"><span class="car-name">${dados.c1Name}</span>${formatCarBadge(dados.c1Status)}</div>`;
-    if(dados.c2Name) carsHtml += `<div class="car-item-container"><span class="car-name">${dados.c2Name}</span>${formatCarBadge(dados.c2Status)}</div>`;
-    if(dados.c3Name) carsHtml += `<div class="car-item-container"><span class="car-name">${dados.c3Name}</span>${formatCarBadge(dados.c3Status)}</div>`;
+    
+    if(dadosEncontrados.c1Name) {
+      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c1Name}</span>${formatCarBadge(dadosEncontrados.c1Status)}</div>`;
+    }
+    if(dadosEncontrados.c2Name) {
+      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c2Name}</span>${formatCarBadge(dadosEncontrados.c2Status)}</div>`;
+    }
+    if(dadosEncontrados.c3Name) {
+      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c3Name}</span>${formatCarBadge(dadosEncontrados.c3Status)}</div>`;
+    }
+
     document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item-container"><span class="car-name">Buscando as melhores opções no mercado...</span></div>';
 
-    // Progresso e Animação
-    const currentStep = parseInt(String(dados.etapa).charAt(0)) || 1;
+    // Animação da Barra de Progresso Neon e Atualização Inteligente da Timeline (CORRIGIDO: Reinserido a lógica e o HTML)
+    const currentStep = parseInt(String(dadosEncontrados.etapa).charAt(0)) || 1;
     const pct = (currentStep / 5) * 100;
-    document.getElementById('progresso-pct').innerText = pct + '%';
-    setTimeout(() => { document.getElementById('progresso-bar').style.width = pct + '%'; }, 150);
 
-    // Timeline
+    document.getElementById('progresso-pct').innerText = pct + '%';
+    // Timeout para gatilhar a animação de preenchimento
+    setTimeout(() => {
+      document.getElementById('progresso-bar').style.width = pct + '%';
+    }, 150);
+
+    // Atualização Inteligente da Timeline Dourada Sóbrida (CORRIGIDO: Lógica reinserida)
     for (let i = 1; i <= 5; i++) {
       const el = document.getElementById('step-' + i);
       if(el) {
         el.classList.remove('completed', 'active');
-        if (i < currentStep) el.classList.add('completed');
-        else if (i === currentStep) el.classList.add('active');
+        if (i < currentStep) {
+          el.classList.add('completed');
+        } else if (i === currentStep) {
+          el.classList.add('active');
+        }
       }
     }
   }
 
-  // Função para exibir mensagem de erro na tela
-  function exibirErro(mensagem) {
-    document.getElementById('cliente-nome').innerText = "Erro";
-    document.getElementById('orcamento-val').innerText = "-";
-    document.getElementById('criterios-val').innerText = "-";
-    
-    const vistoriaEl = document.getElementById('vistoria-status');
-    if (vistoriaEl) { vistoriaEl.style.display = 'none'; }
-    
-    document.getElementById('cars-list').innerHTML = `<div class="car-item-container"><span class="car-name" style="color: var(--text-gold);">${mensagem}</span></div>`;
-    document.getElementById('obs-text').innerText = "Por favor, verifique o link ou tente novamente mais tarde.";
-    document.getElementById('progresso-pct').innerText = '0%';
-    document.getElementById('progresso-bar').style.width = '0%';
-  }
-
-  // Inicia o carregamento
+  // Inicia o processo de carregamento de dados
   carregarDadosCSV();
 </script>
 
 </body>
 </html>
+
