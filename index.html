@@ -7,33 +7,32 @@
   <style>
     /* 
        =========================================
-       DEFINIÇÃO DE CORES E ESTILO PREMIUM (IGUAL IMAGEM)
+       PALETA DE CORES SÓBRIA E PREMIUM (Inspirada no Brasão)
        =========================================
     */
     :root {
-      --bg-pure-black: #000000;     /* Preto Puro para o fundo */
-      --bg-card: #000000;           /* Fundo dos cartões preto tbm */
+      --bg-deep: #1c1f26;           /* Cinza Antracite Fosco do Brasão */
+      --card-main: #232833;         /* Fundo dos cartões principal */
+      --card-inner: #2b313d;        /* Cartões internos */
+      --card-border: rgba(181, 148, 16, 0.15); /* Bordas com dourado sóbrio */
       
-      --gold-border: #D4AF37;       /* Dourado para as bordas e realces */
-      --text-main: #ffffff;         /* Texto principal branco */
-      --text-gold: #D4AF37;         /* Texto secundário/títulos dourado */
+      --gold-brass: #b59410;        /* Dourado Envelhecido Sóbrio */
+      --gold-light: #d6b84a;        /* Dourado Sutil para realces */
       
-      --status-green: #28a745;
-      --status-orange: #ff7f50;
-      --status-grey: #6c757d;
-
-      --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --text-main: #ffffff;         /* Texto principal */
+      --text-muted: #abb8c9;        /* Texto rótulos */
+      
+      --green-status: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.1);
+      
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* 
-       =========================================
-       RESET E ESTILOS GERAIS
-       =========================================
-    */
+    /* Reset e GERAIS */
     * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
     body {
-      background-color: var(--bg-pure-black);
+      background-color: var(--bg-deep);
       color: var(--text-main);
       font-family: var(--font-family);
       min-height: 100vh;
@@ -41,66 +40,58 @@
       justify-content: center;
       align-items: center; /* Centraliza verticalmente */
       padding: 20px 15px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .app-container {
       width: 100%;
       max-width: 480px;
-      background-color: var(--bg-card);
-      border: 3px solid var(--gold-border); /* Borda dourada grossa */
-      border-radius: 28px;
+      background-color: var(--card-main);
+      border: 1px solid var(--card-border);
+      border-radius: 28px; /* Cantos arredondados imitando o círculo */
       padding: 35px 25px;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); /* Brilho dourado sutil */
+      box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+      transition: transform 0.3s ease;
     }
 
-    /* 
-       =========================================
-       CABEÇALHO COM LOGO DOURADA 3D
-       =========================================
-    */
-    .brand-header-container {
+    /* CABEÇALHO COM BRASÃO */
+    .brand-logo-container {
       text-align: center;
-      margin-bottom: 25px;
-      padding-bottom: 20px;
-      border-bottom: 3px solid rgba(212, 175, 55, 0.4); /* Linha divisória dourada sutil */
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
     .brand-logo-image {
-      max-width: 160px; /* Tamanho proporcional */
+      max-width: 200px;
       height: auto;
       display: block;
-      margin: 0 auto 15px auto;
-      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)); /* Brilho na logo */
+      object-fit: contain;
+      /* Trato visual: sutil profundidade integrada ao brasão */
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4)); 
     }
 
-    .brand-logo-text {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: var(--text-main);
-      text-transform: uppercase;
-      margin-bottom: 5px;
+    .brand-header {
+      text-align: center;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 30px;
     }
-    .brand-logo-text span { color: var(--text-gold); }
-
+    
+    /* SUBTÍTULO REFINADO - COPIANDO A COR E PESO DO BRASÃO */
     .brand-sub {
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-gold);
+      color: var(--gold-brass); /* Cor dourada envelhecida sóbria */
       text-transform: uppercase;
-      letter-spacing: 2.5px;
+      letter-spacing: 2.8px; /* Mais espaçamento para elegância */
       opacity: 0.9;
     }
 
-    /* 
-       =========================================
-       CARTÕES DE INFORMAÇÃO PRINCIPAL
-       =========================================
-    */
-    .info-section {
-      background-color: var(--bg-card);
-      border: 3px solid var(--gold-border);
+    /* CARTÕES DE INFORMAÇÃO E SEÇÕES */
+    .info-card {
+      background-color: var(--card-inner);
+      border: 1px solid var(--card-border);
       border-radius: 20px;
       padding: 20px;
       margin-bottom: 20px;
@@ -109,132 +100,117 @@
     .info-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+      align-items: flex-start;
+      margin-bottom: 15px;
     }
     .info-row:last-child { margin-bottom: 0; }
 
     .info-label {
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-main);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
+      padding-top: 3px;
     }
 
     .info-value {
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-gold);
+      color: var(--text-main);
       text-align: right;
+      max-width: 65%; /* Evita que o valor empurre o rótulo */
     }
 
-    .status-vistoria-badge {
+    /* Badge de Status de Vistoria */
+    .status-badge {
       display: inline-block;
-      padding: 8px 16px;
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
-      background-color: rgba(40, 167, 69, 0.1);
-      color: var(--status-green);
-      border: 1px solid var(--status-green);
+      background-color: var(--green-bg);
+      color: var(--green-status);
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
-    /* 
-       =========================================
-       MODELOS NO RADAR COM BADGES
-       =========================================
-    */
+    /* Títulos de Seção com toque DOURADO SÓBRIO */
     .section-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
-      color: var(--text-gold);
+      color: var(--gold-light); /* Dourado Sutil */
       text-transform: uppercase;
       letter-spacing: 1.8px;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .car-item-container {
+    /* MODELOS NO RADAR (LISTA PREMIUM) */
+    .car-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #111; /* Cinza bem escuro pra destacar */
-      border: 3px solid var(--gold-border);
-      border-radius: 16px;
-      padding: 14px 20px;
+      background-color: rgba(0,0,0,0.1);
+      border: 1px solid var(--card-border);
+      border-radius: 16px; /* Cantos mais suaves */
+      padding: 15px 20px;
       margin-bottom: 12px;
+      transition: background-color 0.2s ease;
     }
-    .car-item-container:last-child { margin-bottom: 0; }
+    .car-item:last-child { margin-bottom: 0; }
+    .car-item:hover { background-color: rgba(181, 148, 16, 0.05); } /* Dourado sutil no hover */
 
     .car-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
     
-    /* Badges de Status Iguais à Imagem */
-    .status-badge {
+    /* Status individual do carro - Formato "pílula" encorpada */
+    .car-status-dot {
       font-size: 10px;
       font-weight: 700;
       padding: 6px 12px;
-      border-radius: 20px;
+      border-radius: 12px; /* Mais encorpado */
+      margin-left: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
-    .status-badge.escolhido { background-color: rgba(40, 167, 69, 0.15); color: var(--status-green); border: 1px solid var(--status-green); }
-    .status-badge.analise { background-color: rgba(255, 127, 80, 0.15); color: var(--status-orange); border: 1px solid var(--status-orange); }
-    .status-badge.radar { background-color: rgba(108, 117, 125, 0.15); color: var(--status-grey); border: 1px solid var(--status-grey); }
+    .car-status-dot.escolhido { background-color: var(--green-bg); color: var(--green-status); border: 1px solid rgba(16,185,129,0.15);}
+    .car-status-dot.analise { background-color: rgba(214,184,74, 0.08); color: var(--gold-light); border: 1px solid rgba(214,184,74,0.15);}
+    .car-status-dot.radar { background-color: rgba(139,155,180, 0.1); color: var(--text-muted); border: 1px solid rgba(139,155,180,0.15);}
 
-    /* 
-       =========================================
-       BARRA DE PROGRESSO COM NEON GLOW
-       =========================================
-    */
+    /* BARRA DE PROGRESSO ROBUSTA - Sem traço fino e sem neon */
     .progress-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
-    .progress-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      text-transform: uppercase;
-    }
     .progress-pct {
       font-size: 18px;
       font-weight: 800;
-      color: var(--text-gold);
+      color: var(--gold-light);
     }
 
     .progress-track {
       width: 100%;
-      height: 18px;
-      background-color: #2c2c2c; /* Cinza escura */
-      border-radius: 12px;
+      height: 18px; /* Mais grossa e imponente */
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 14px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--card-border);
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #ffea00, #ffd700); /* Amarelo limão brilhante */
-      width: 0%; /* JS preencherá */
-      border-radius: 12px;
-      transition: width 1.2s ease;
-      box-shadow: 0 0 15px rgba(255, 234, 0, 0.7); /* Efeito Neon Amarelo */
+      background: linear-gradient(90deg, var(--gold-brass), var(--gold-light)); /* Degradê sóbrio metalizado */
+      width: 0%; /* Definido via JS */
+      border-radius: 14px;
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); /* Animação suave e substancial */
+      /* Removido o brilho neon dourado */
     }
 
-    /* 
-       =========================================
-       LINHA DO TEMPO (ESTILO REPLICADO)
-       =========================================
-    */
+    /* LINHA DO TEMPO (MINIMALISTA DOURADA - Sem traços finos) */
     .timeline {
       position: relative;
-      padding-left: 30px;
+      padding-left: 28px;
       margin-top: 15px;
     }
     .timeline::before {
@@ -243,78 +219,86 @@
       left: 7px;
       top: 5px;
       bottom: 5px;
-      width: 3px;
-      background-color: #2c2c2c; /* Linha divisória escura */
+      width: 2px; /* Mantida fina para discrição, mas dourada */
+      background-color: var(--card-border);
     }
 
     .step {
       position: relative;
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
     .step:last-child { margin-bottom: 0; }
     
     .step-dot {
       position: absolute;
-      left: -30px;
+      left: -28px;
       top: 3px;
-      width: 18px;
-      height: 18px;
+      width: 16px; /* Mais encorpado */
+      height: 16px;
       border-radius: 50%;
-      background-color: #000; /* Fundo do ponto preto */
-      border: 3px solid #2c2c2c; /* Borda escura padrão */
+      background-color: var(--card-inner);
+      border: 3px solid var(--card-border); /* Borda imitando engrenagem discreta */
       transition: all 0.3s ease;
     }
     
     /* Estados da Timeline */
-    .step.completed .step-dot { background-color: var(--status-green); border-color: var(--status-green); }
-    .step.active .step-dot { background-color: var(--text-gold); border-color: var(--text-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
+    .step.completed .step-dot { background-color: var(--green-status); border-color: var(--green-status); }
+    .step.active .step-dot { background-color: var(--gold-light); border-color: var(--gold-light); box-shadow: 0 0 10px rgba(181,148,16,0.3); }
 
-    .step-content { padding-left: 10px; }
-    .step-name { font-size: 13px; font-weight: 700; color: #a1a1a1; }
+    .step-content { padding-left: 8px; }
+    .step-name { font-size: 13px; font-weight: 700; color: rgba(139,155,180, 0.6); }
     .step.completed .step-name, .step.active .step-name { color: var(--text-main); }
     
-    .step-desc { font-size: 11px; color: #6c757d; margin-top: 3px; }
-    .step.active .step-desc { color: #a1a1a1; }
+    .step-desc { font-size: 11px; color: rgba(139,155,180, 0.4); margin-top: 3px; }
+    .step.active .step-desc { color: var(--text-muted); }
 
-    /* 
-       =========================================
-       OBSERVAÇÃO TÁTICA / PRÓXIMO PASSO
-       =========================================
-    */
-    .obs-section {
-      background-color: var(--bg-card);
-      border: 3px solid var(--gold-border);
-      border-radius: 20px;
-      padding: 20px;
-      margin-top: 20px;
+    /* CAIXA DE OBSERVAÇÃO TÁTICA DOURADA SÓBRIA */
+    .obs-box {
+      background-color: rgba(181, 148, 16, 0.04); /* Fundo dourado sóbrio sutil */
+      border-left: 4px solid var(--gold-brass);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 25px;
     }
     .obs-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold-light);
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      margin-bottom: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
     }
     .obs-text {
       font-size: 12px;
       color: #e2e8f0;
       line-height: 1.6;
     }
+
+    /* FOOTER */
+    .app-footer {
+      text-align: center;
+      font-size: 10px;
+      color: rgba(139, 155, 180, 0.6);
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid var(--card-border);
+    }
   </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- Cabeçalho com Logo Dourada e Brilhante (Usando o caminho do GitHub Pages) -->
-  <div class="brand-header-container">
-    <img src="https://luanferres93-alt.github.io/status-ferrescarhunter/atualizado.jpeg" alt="Ferres Car Hunter Dourado" class="brand-logo-image">
-    <div class="brand-logo-text">FERRES <span>CAR HUNTER</span></div>
+  <!-- Cabeçalho com Brasão e Identidade Visual (Caminho direto GitHub Pages) -->
+  <div class="brand-logo-container">
+    <img src="https://luanferres93-alt.github.io/status-ferrescarhunter/atualizado.jpeg" alt="Ferres Car Hunter Dourado Sóbrido" class="brand-logo-image">
+  </div>
+
+  <div class="brand-header">
     <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
   </div>
 
-  <!-- Cartão de Informações Principais -->
-  <div class="info-section">
+  <!-- Cartão Principal de Dados -->
+  <div class="info-card">
     <div class="info-row">
       <span class="info-label">CLIENTE</span>
       <span class="info-value" id="cliente-nome">Carregando...</span>
@@ -325,28 +309,28 @@
     </div>
     <div class="info-row">
       <span class="info-label">CRITÉRIOS</span>
-      <span class="info-value" id="criterios-val" style="font-size: 12px; color: #a1a1a1;">Carregando...</span>
+      <span class="info-value" id="criterios-val" style="font-size: 12px; color: var(--text-muted);">Carregando...</span>
     </div>
     <div class="info-row" style="margin-top: 15px; align-items: center;">
       <span class="info-label">RESULTADO VISTORIA</span>
-      <span class="status-vistoria-badge" id="vistoria-status">Carregando...</span>
+      <span class="status-badge" id="vistoria-status">Carregando...</span>
     </div>
   </div>
 
-  <!-- Modelos no Radar -->
-  <div class="info-section">
+  <!-- Carros no Radar -->
+  <div class="info-card">
     <div class="section-title">
       <span>🚘</span> Modelos no Radar
     </div>
     <div id="cars-list">
-      <div class="car-item-container"><span class="car-name">Buscando...</span></div>
+      <div class="car-item"><span class="car-name">Carregando modelos...</span></div>
     </div>
   </div>
 
-  <!-- Progresso Geral com Neon Glow Amarelo -->
-  <div class="info-section">
+  <!-- Progresso Geral ROBUSTO -->
+  <div class="info-card">
     <div class="progress-header">
-      <span class="progress-title">Progresso Geral</span>
+      <span class="info-label">Progresso Geral</span>
       <span class="progress-pct" id="progresso-pct">0%</span>
     </div>
     <div class="progress-track">
@@ -354,8 +338,8 @@
     </div>
   </div>
 
-  <!-- Linha do Tempo do Processo (CORRIGIDO: Inserida novamente) -->
-  <div class="info-section">
+  <!-- Linha do Tempo Minimalista Sóbrida -->
+  <div class="info-card">
     <div class="section-title">
       <span>📌</span> Linha do Tempo do Processo
     </div>
@@ -398,16 +382,19 @@
     </div>
   </div>
 
-  <!-- Observação Tática Dourada -->
-  <div class="obs-section">
+  <!-- Caixa de Observação Tática Dourada Sóbrida -->
+  <div class="obs-box">
     <div class="obs-title">💬 Observação Tática / Próximo Passo</div>
-    <div class="obs-text" id="obs-text">Aguardando atualização técnica dos especialistas...</div>
+    <div class="obs-text" id="obs-text">Carregando dados...</div>
   </div>
 
+  <div class="app-footer">
+    Ferres Car Hunter • Atualizado via Google Sheets
+  </div>
 </div>
 
 <script>
-  // Helper para parsear o CSV
+  // Função helper para parsear CSV (mantida para compatibilidade)
   function parseCSV(text) {
     let p = '', c = '', r = [];
     let q = false;
@@ -432,7 +419,7 @@
     return r;
   }
 
-  // Helper para normalizar texto (busca)
+  // Função helper para normalizar texto (mantida para busca)
   function normalizarTexto(txt) {
     return String(txt || "")
       .toLowerCase()
@@ -441,17 +428,17 @@
       .replace(/[^a-z0-9]/g, "");
   }
 
-  // Helper para formatar badges coloridos
-  function formatCarBadge(status) {
+  // Função helper para formatar o status individual do carro (Cores Refinadas e Encorpadas)
+  function formatCarStatus(status) {
     if (!status) return '';
     const s = status.toLowerCase();
-    if (s.includes('escolhido')) return `<span class="status-badge escolhido">✅ ESCOLHIDO</span>`;
-    if (s.includes('analise')) return `<span class="status-badge analise">🔥 EM ANÁLISE</span>`;
-    if (s.includes('radar')) return `<span class="status-badge radar">👀 NO RADAR</span>`;
-    return `<span class="status-badge radar">${status}</span>`; // Padrão
+    if (s.includes('escolhido')) return `<span class="car-status-dot escolhido">Escolhido</span>`;
+    if (s.includes('analise')) return `<span class="car-status-dot analise">Em Análise</span>`;
+    if (s.includes('radar')) return `<span class="car-status-dot radar">No Radar</span>`;
+    return `<span class="car-status-dot radar">${status}</span>`; // Padrão
   }
 
-  // Função principal para carregar dados do Google Sheets
+  // Função principal para carregar os dados
   async function carregarDadosCSV() {
     const urlParams = new URLSearchParams(window.location.search);
     const paramCliente = normalizarTexto(urlParams.get('c') || '');
@@ -475,7 +462,6 @@
 
     // Busca nas abas
     for (const slot of slots) {
-      // URL para download do CSV da aba específica
       const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
 
       try {
@@ -490,7 +476,7 @@
         const clientePlanilha = getCellVal(2, 1);
         const clienteNorm = normalizarTexto(clientePlanilha);
 
-        // Match do cliente
+        // Verifica match
         if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
           dadosEncontrados = {
             cliente: clientePlanilha,
@@ -510,52 +496,52 @@
       }
     }
 
-    // Se não encontrar dados, exibe tela de erro
+    // Se não encontrar dados, exibe tela de erro amigável (Dourada Sóbria)
     if (!dadosEncontrados) {
       document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
       document.getElementById('orcamento-val').innerText = "-";
       document.getElementById('criterios-val').innerText = "-";
       document.getElementById('vistoria-status').style.display = 'none';
-      document.getElementById('cars-list').innerHTML = '<div class="car-item-container"><span class="car-name" style="color: var(--text-gold);">Link desativado ou inválido.</span></div>';
-      document.getElementById('obs-text').innerText = "Por favor, verifique o link ou entre em contato para mais informações.";
+      document.getElementById('cars-list').innerHTML = '<div class="car-item"><span class="car-name" style="color: var(--gold-light);">Link desativado ou inválido.</span></div>';
+      document.getElementById('obs-text').innerText = "Por favor, verifique o link ou entre em contato com a Ferres Car Hunter.";
       document.getElementById('progresso-pct').innerText = '0%';
       document.getElementById('progresso-bar').style.width = '0%';
       return;
     }
 
-    // Preenche os dados básicos no novo design
+    // Preenche os dados básicos com a nova estrutura dourada sóbria
     document.getElementById('cliente-nome').innerText = dadosEncontrados.cliente || "-";
     document.getElementById('orcamento-val').innerText = dadosEncontrados.orcamento || "-";
     document.getElementById('criterios-val').innerText = dadosEncontrados.criterios || "-";
-    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "Em andamento";
-    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "A busca continua. Estamos monitorando o mercado para garantir a melhor negociação.";
+    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "Em análise";
+    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "Sem observações táticas no momento. A busca continua.";
 
-    // Preenche a lista de carros com badges coloridos
+    // Lista de carros com estilo premium e status colorido
     let carsHtml = '';
     
     if(dadosEncontrados.c1Name) {
-      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c1Name}</span>${formatCarBadge(dadosEncontrados.c1Status)}</div>`;
+      carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c1Name}</span>${formatCarStatus(dadosEncontrados.c1Status)}</div>`;
     }
     if(dadosEncontrados.c2Name) {
-      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c2Name}</span>${formatCarBadge(dadosEncontrados.c2Status)}</div>`;
+      carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c2Name}</span>${formatCarStatus(dadosEncontrados.c2Status)}</div>`;
     }
     if(dadosEncontrados.c3Name) {
-      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c3Name}</span>${formatCarBadge(dadosEncontrados.c3Status)}</div>`;
+      carsHtml += `<div class="car-item"><span class="car-name">${dadosEncontrados.c3Name}</span>${formatCarStatus(dadosEncontrados.c3Status)}</div>`;
     }
 
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item-container"><span class="car-name">Nenhum veículo em destaque no momento...</span></div>';
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Buscando as melhores opções no mercado...</span></div>';
 
-    // Animação da Barra de Progresso Neon e Atualização da Timeline
+    // Cálculo e Animação de Progresso Robusto
     const currentStep = parseInt(String(dadosEncontrados.etapa).charAt(0)) || 1;
     const pct = (currentStep / 5) * 100;
 
     document.getElementById('progresso-pct').innerText = pct + '%';
-    // Pequeno delay para acionar a animação
+    // Timeout para gatilhar a animação de preenchimento
     setTimeout(() => {
       document.getElementById('progresso-bar').style.width = pct + '%';
     }, 150);
 
-    // Atualização da Timeline (CORRIGIDO: Lógica reinserida)
+    // Atualização da Timeline Minimalista Dourada Sóbrida
     for (let i = 1; i <= 5; i++) {
       const el = document.getElementById('step-' + i);
       if(el) {
@@ -569,7 +555,7 @@
     }
   }
 
-  // Inicia o processo
+  // Inicia o carregamento
   carregarDadosCSV();
 </script>
 
