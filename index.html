@@ -7,118 +7,111 @@
   <style>
     /* 
        =========================================
-       DEFINIÇÃO DE CORES E ESTILO PREMIUM (BASEADO NO BRASÃO DOURADO)
+       DEFINIÇÃO DE ESTILO E PALETA DE CORES (Premium Sophistication)
        =========================================
     */
     :root {
-      --bg-pure-black: #000000;     /* Preto Puro para o fundo */
-      --bg-card: #000000;           /* Fundo dos cartões tbm preto */
+      /* Fundo e Container - Preto Sophistication */
+      --bg-page: #0b0d12;
+      --bg-container: #111621;
       
-      --gold-border: #D4AF37;       /* Dourado Sophistication para bordas */
-      --text-main: #ffffff;         /* Texto principal branco */
-      --text-gold: #D4AF37;         /* Texto secundário dourado */
+      /* Bordas e Divisores - Dourado Brass */
+      --border-gold: rgba(181, 148, 16, 0.3);
+      --divider-gold: rgba(181, 148, 16, 0.2);
       
-      --status-green: #28a745;
-      --status-orange: #ff7f50;
-      --status-grey: #6c757d;
-
-      --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      /* Textos Principal e Destaque */
+      --text-pure-white: #ffffff;
+      --text-gold-light: #e6c64c;
+      --text-gold-brass: #b59410;
+      --text-muted-gray: #abb8c9;
+      
+      /* Status e Progresso */
+      --status-green: #10b981;
+      --status-green-bg: rgba(16, 185, 129, 0.1);
+      
+      /* Tipografia */
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* 
-       =========================================
-       RESET E ESTILOS GERAIS
-       =========================================
-    */
+    /* Reset e GERAIS */
     * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
     body {
-      background-color: var(--bg-pure-black);
-      color: var(--text-main);
+      background-color: var(--bg-page);
+      color: var(--text-pure-white);
       font-family: var(--font-family);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center; /* Centraliza verticalmente se o cartão for pequeno */
+      align-items: center; /* Centraliza verticalmente */
       padding: 20px 15px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .app-container {
       width: 100%;
       max-width: 480px;
-      background-color: var(--bg-card);
-      border: 3px solid var(--gold-border); /* Borda dourada robusta */
-      border-radius: 28px; /* Cantos arredondados suavizados */
+      background-color: var(--bg-container);
+      border: 1px solid var(--border-gold);
+      border-radius: 28px;
       padding: 35px 25px;
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); /* Brilho dourado sutil */
+      box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+      transition: transform 0.3s ease;
     }
 
-    /* 
-       =========================================
-       CABEÇALHO COM BRASÃO CIRCULAR INTEGRADO
-       =========================================
-    */
-    .brand-header-container {
+    /* CABEÇALHO COM BRASÃO CIRCULAR INTEGRADO */
+    .brand-logo-container {
       text-align: center;
       margin-bottom: 25px;
-      padding-bottom: 20px;
-      border-bottom: 3px solid rgba(212, 175, 55, 0.4); /* Linha divisória dourada */
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
     }
-
+    
     /* ACABAMENTO PREMIUM: FORÇA O LOGO A SER CIRCULAR, ELIMINANDO A MOLDURA CINZA */
     .brand-logo-image {
-      max-width: 200px; /* Tamanho substancial para o brasão */
+      max-width: 200px;
       height: auto;
       display: block;
-      margin-bottom: 15px;
       object-fit: contain;
       /* O Segredo: Corta a imagem em círculo e arredonda as bordas */
       clip-path: circle(50% at 50% 50%); 
       border-radius: 50%;
-      /* Trato visual: sutil profundidade integrada ao brasão */
-      filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4)); 
+      /* Trato visual: Brilho dourado integrado */
+      filter: drop-shadow(0 0 15px rgba(181, 148, 16, 0.4)); 
     }
 
-    .brand-logo-text {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: var(--text-main);
-      text-transform: uppercase;
-      margin-bottom: 5px;
+    .brand-header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--divider-gold);
+      margin-bottom: 25px;
     }
-    .brand-logo-text span { color: var(--text-gold); }
-
+    
+    /* SUBTÍTULO REFINADO - DOURADO DO BRASÃO */
     .brand-sub {
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-gold);
+      color: var(--text-gold-brass);
       text-transform: uppercase;
-      letter-spacing: 2.5px;
-      opacity: 0.9;
+      letter-spacing: 2.8px;
+      opacity: 0.95;
     }
 
-    /* 
-       =========================================
-       CARTÕES DE INFORMAÇÃO PRINCIPAL
-       =========================================
-    */
-    .info-section {
-      background-color: var(--bg-card);
-      border: 3px solid var(--gold-border);
+    /* CARTÕES DE INFORMAÇÃO PRINCIPAL */
+    .info-card {
+      background-color: #161c2a; /* Ligeiramente mais claro que o container */
+      border: 1px solid var(--border-gold);
       border-radius: 20px;
       padding: 20px;
       margin-bottom: 20px;
     }
 
+    /* Rótulos e Valores */
     .info-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 12px;
     }
     .info-row:last-child { margin-bottom: 0; }
@@ -126,124 +119,109 @@
     .info-label {
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-main);
+      color: var(--text-muted-gray);
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
+      padding-top: 3px;
     }
 
     .info-value {
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-gold);
+      color: var(--text-pure-white);
       text-align: right;
+      max-width: 65%;
     }
 
-    .status-vistoria-badge {
+    /* Badge de Status de Vistoria */
+    .status-badge {
       display: inline-block;
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
-      background-color: rgba(40, 167, 69, 0.1);
+      background-color: var(--status-green-bg);
       color: var(--status-green);
-      border: 1px solid var(--status-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
-    /* 
-       =========================================
-       MODELOS NO RADAR COM BADGES
-       =========================================
-    */
+    /* Títulos de Seção com toque Dourado Claro */
     .section-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
-      color: var(--text-gold);
+      color: var(--text-gold-light);
       text-transform: uppercase;
       letter-spacing: 1.8px;
       margin-bottom: 15px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .car-item-container {
+    /* MODELOS NO RADAR (LISTA PREMIUM) */
+    .car-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #111; /* Cinza bem escuro para destacar */
-      border: 3px solid var(--gold-border);
-      border-radius: 16px;
-      padding: 14px 20px;
+      background-color: rgba(0,0,0,0.25);
+      border: 1px solid var(--border-gold);
+      border-radius: 14px;
+      padding: 14px 18px;
       margin-bottom: 12px;
+      transition: background-color 0.2s ease;
     }
-    .car-item-container:last-child { margin-bottom: 0; }
+    .car-item:last-child { margin-bottom: 0; }
+    .car-item:hover { background-color: rgba(181, 148, 16, 0.03); }
 
-    .car-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
+    .car-name { font-size: 13px; font-weight: 600; color: var(--text-pure-white); }
     
-    /* Badges de Status Iguais à Imagem */
-    .status-badge {
+    /* Status individual do carro */
+    .car-status-dot {
       font-size: 10px;
       font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 5px 12px;
+      border-radius: 12px;
+      margin-left: 8px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
-    .status-badge.escolhido { background-color: rgba(40, 167, 69, 0.15); color: var(--status-green); border: 1px solid var(--status-green); }
-    .status-badge.analise { background-color: rgba(255, 127, 80, 0.15); color: var(--status-orange); border: 1px solid var(--status-orange); }
-    .status-badge.radar { background-color: rgba(108, 117, 125, 0.15); color: var(--status-grey); border: 1px solid var(--status-grey); }
+    .car-status-dot.escolhido { background-color: var(--status-green-bg); color: var(--status-green); border: 1px solid rgba(16,185,129,0.15);}
+    .car-status-dot.analise { background-color: rgba(230,198,76, 0.08); color: var(--text-gold-light); border: 1px solid rgba(230,198,76,0.15);}
+    .car-status-dot.radar { background-color: rgba(171,184,201, 0.1); color: var(--text-muted-gray); border: 1px solid rgba(171,184,201,0.15);}
 
-    /* 
-       =========================================
-       BARRA DE PROGRESSO COM NEON GLOW
-       =========================================
-    */
+    /* BARRA DE PROGRESSO DO BRASÃO */
     .progress-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
-    .progress-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      text-transform: uppercase;
-    }
     .progress-pct {
       font-size: 18px;
       font-weight: 800;
-      color: var(--text-gold);
+      color: var(--text-gold-light);
     }
 
     .progress-track {
       width: 100%;
-      height: 18px;
-      background-color: #2c2c2c; /* Cinza escura */
+      height: 14px;
+      background-color: rgba(0,0,0,0.3);
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--border-gold);
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #ffea00, #ffd700); /* Amarelo limão brilhante */
-      width: 0%; /* JS preencherá */
+      background: linear-gradient(90deg, var(--text-gold-brass), var(--text-gold-light)); /* Degradê metalizado */
+      width: 0%; /* Definido via JS */
       border-radius: 12px;
-      transition: width 1.2s ease;
-      box-shadow: 0 0 15px rgba(255, 234, 0, 0.7); /* Efeito Neon Amarelo */
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 15px rgba(230, 198, 76, 0.6);
     }
 
-    /* 
-       =========================================
-       LINHA DO TEMPO (CORRIGIDO: Inserido novamente com estilo imponente)
-       =========================================
-    */
+    /* LINHA DO TEMPO (MINIMALISTA DOURADA) */
     .timeline {
       position: relative;
-      padding-left: 30px;
+      padding-left: 28px;
       margin-top: 15px;
     }
     .timeline::before {
@@ -252,78 +230,86 @@
       left: 7px;
       top: 5px;
       bottom: 5px;
-      width: 3px;
-      background-color: #2c2c2c; /* Linha divisória escura */
+      width: 2px;
+      background-color: var(--divider-gold);
     }
 
     .step {
       position: relative;
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
     .step:last-child { margin-bottom: 0; }
     
     .step-dot {
       position: absolute;
-      left: -30px;
+      left: -28px;
       top: 3px;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background-color: #000; /* Fundo do ponto preto */
-      border: 3px solid #2c2c2c; /* Borda escura padrão */
+      background-color: #161c2a;
+      border: 3px solid var(--divider-gold);
       transition: all 0.3s ease;
     }
     
     /* Estados da Timeline Inteligentes */
     .step.completed .step-dot { background-color: var(--status-green); border-color: var(--status-green); }
-    .step.active .step-dot { background-color: var(--text-gold); border-color: var(--text-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
+    .step.active .step-dot { background-color: var(--text-gold-light); border-color: var(--text-gold-light); box-shadow: 0 0 10px rgba(181,148,16,0.3); }
 
-    .step-content { padding-left: 10px; }
-    .step-name { font-size: 13px; font-weight: 700; color: #a1a1a1; }
-    .step.completed .step-name, .step.active .step-name { color: var(--text-main); }
+    .step-content { padding-left: 8px; }
+    .step-name { font-size: 13px; font-weight: 700; color: rgba(171,184,201, 0.7); }
+    .step.completed .step-name, .step.active .step-name { color: var(--text-pure-white); }
     
-    .step-desc { font-size: 11px; color: #6c757d; margin-top: 3px; }
-    .step.active .step-desc { color: #a1a1a1; }
+    .step-desc { font-size: 11px; color: rgba(171,184,201, 0.5); margin-top: 3px; }
+    .step.active .step-desc { color: var(--text-muted-gray); }
 
-    /* 
-       =========================================
-       OBSERVAÇÃO TÁTICA / PRÓXIMO PASSO
-       =========================================
-    */
-    .obs-section {
-      background-color: var(--bg-card);
-      border: 3px solid var(--gold-border);
-      border-radius: 20px;
-      padding: 20px;
-      margin-top: 20px;
+    /* CAIXA DE OBSERVAÇÃO TÁTICA DOURADA SÓBRIA */
+    .obs-box {
+      background-color: rgba(181, 148, 16, 0.04);
+      border-left: 4px solid var(--text-gold-brass);
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 25px;
     }
     .obs-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-gold-light);
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      margin-bottom: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
     }
     .obs-text {
       font-size: 12px;
       color: #e2e8f0;
       line-height: 1.6;
     }
+
+    /* FOOTER */
+    .app-footer {
+      text-align: center;
+      font-size: 10px;
+      color: rgba(171, 184, 201, 0.6);
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-gold);
+    }
   </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- Cabeçalho com Brasão Dourado Redondo Integrado (Ajuste Circular) -->
-  <div class="brand-header-container">
-    <img src="https://luanferres93-alt.github.io/status-ferrescarhunter/atualizado.jpeg" alt="Ferres Car Hunter Brasão Circular" class="brand-logo-image">
-    <div class="brand-logo-text">FERRES <span>CAR HUNTER</span></div>
+  <!-- Cabeçalho com Brasão Integrado e Circular (Acabamento Premium via Link Direto do GitHub Pages) -->
+  <div class="brand-logo-container">
+    <img src="https://luanferres93-alt.github.io/status-ferrescarhunter/atualizado.jpeg" alt="Ferres Car Hunter Logo" class="brand-logo-image">
+  </div>
+
+  <div class="brand-header">
     <div class="brand-sub">Portal do Cliente • Acompanhamento da Busca</div>
   </div>
 
-  <!-- Cartão de Informações Principais -->
-  <div class="info-section">
+  <!-- Cartão Principal de Dados -->
+  <div class="info-card">
     <div class="info-row">
       <span class="info-label">CLIENTE</span>
       <span class="info-value" id="cliente-nome">Carregando...</span>
@@ -334,28 +320,28 @@
     </div>
     <div class="info-row">
       <span class="info-label">CRITÉRIOS</span>
-      <span class="info-value" id="criterios-val" style="font-size: 12px; color: #a1a1a1;">Carregando...</span>
+      <span class="info-value" id="criterios-val" style="font-size: 12px; color: rgba(171, 184, 201, 0.9);">Carregando...</span>
     </div>
     <div class="info-row" style="margin-top: 15px; align-items: center;">
       <span class="info-label">RESULTADO VISTORIA</span>
-      <span class="status-vistoria-badge" id="vistoria-status">Carregando...</span>
+      <span class="status-badge" id="vistoria-status">Carregando...</span>
     </div>
   </div>
 
-  <!-- Modelos no Radar com Badges Coloridos -->
-  <div class="info-section">
+  <!-- Carros no Radar -->
+  <div class="info-card">
     <div class="section-title">
       <span>🚘</span> Modelos no Radar
     </div>
     <div id="cars-list">
-      <div class="car-item-container"><span class="car-name">Buscando as melhores opções...</span></div>
+      <div class="car-item"><span class="car-name">Carregando modelos...</span></div>
     </div>
   </div>
 
-  <!-- Progresso Geral com Neon Glow Amarelo -->
-  <div class="info-section">
+  <!-- Progresso Geral -->
+  <div class="info-card">
     <div class="progress-header">
-      <span class="progress-title">Progresso Geral</span>
+      <span class="info-label">Progresso Geral</span>
       <span class="progress-pct" id="progresso-pct">0%</span>
     </div>
     <div class="progress-track">
@@ -363,8 +349,8 @@
     </div>
   </div>
 
-  <!-- Linha do Tempo do Processo (CORRIGIDO: Inserido novamente e mapeado ao JS) -->
-  <div class="info-section">
+  <!-- Linha do Tempo -->
+  <div class="info-card">
     <div class="section-title">
       <span>📌</span> Linha do Tempo do Processo
     </div>
@@ -407,16 +393,19 @@
     </div>
   </div>
 
-  <!-- Observação Tática Dourada -->
-  <div class="obs-section">
+  <!-- Caixa de Observação Tática Dourada Sóbria -->
+  <div class="obs-box">
     <div class="obs-title">💬 Observação Tática / Próximo Passo</div>
-    <div class="obs-text" id="obs-text">Aguardando atualização técnica dos especialistas...</div>
+    <div class="obs-text" id="obs-text">Carregando dados...</div>
   </div>
 
+  <div class="app-footer">
+    Ferres Car Hunter • Atualizado via Google Sheets
+  </div>
 </div>
 
 <script>
-  // Helper para parsear o CSV do Google Sheets
+  // Função helper para parsear CSV (mantida para compatibilidade)
   function parseCSV(text) {
     let p = '', c = '', r = [];
     let q = false;
@@ -441,7 +430,7 @@
     return r;
   }
 
-  // Helper para normalizar texto (busca)
+  // Função helper para normalizar texto (mantida para busca)
   function normalizarTexto(txt) {
     return String(txt || "")
       .toLowerCase()
@@ -450,24 +439,35 @@
       .replace(/[^a-z0-9]/g, "");
   }
 
-  // Helper para formatar badges coloridos da lista de carros
-  function formatCarBadge(status) {
+  // Função helper para formatar o status individual do carro (Cores Refinadas)
+  function formatCarStatus(status) {
     if (!status) return '';
     const s = status.toLowerCase();
-    if (s.includes('escolhido')) return `<span class="status-badge escolhido">✅ ESCOLHIDO</span>`;
-    if (s.includes('analise')) return `<span class="status-badge analise">🔥 EM ANÁLISE</span>`;
-    if (s.includes('radar')) return `<span class="status-badge radar">👀 NO RADAR</span>`;
-    return `<span class="status-badge radar">${status}</span>`; // Padrão
+    if (s.includes('escolhido')) return `<span class="car-status-dot escolhido">Escolhido</span>`;
+    if (s.includes('analise')) return `<span class="car-status-dot analise">Em Análise</span>`;
+    if (s.includes('radar')) return `<span class="car-status-dot radar">No Radar</span>`;
+    return `<span class="car-status-dot radar">${status}</span>`; // Padrão
   }
 
-  // Função principal para carregar dados do Google Sheets
+  /* 
+     ===========================================================
+     FUNÇÃO JS ATUALIZADA - LÓGICA DE ACESSO PRINCIPAL (SLOT_0)
+     ===========================================================
+  */
   async function carregarDadosCSV() {
     const urlParams = new URLSearchParams(window.location.search);
-    const paramCliente = normalizarTexto(urlParams.get('c') || '');
+    let paramCliente = normalizarTexto(urlParams.get('c') || '');
 
-    // Mapeamento das 11 Abas (Slots)
-    const slots = [
-      { id: "slot01", gid: "0" },
+    /* 
+       Aba Principal (Slot_0): Este GID será carregado automaticamente 
+       quando o site for acessado sem nenhum parâmetro (?c=...)
+    */
+    const GID_PRINCIPAL = "1533210832"; 
+
+    // Mapeamento das Abas de Acesso Individual (Slots Individuais)
+    // A cada nova aba criada, adicione-a aqui com o GID correspondente.
+    const slotsIndividuais = [
+      { id: "slot01", gid: "0" }, 
       { id: "slot02", gid: "351050736" },
       { id: "slot03", gid: "1472927648" },
       { id: "slot04", gid: "592480650" },
@@ -478,107 +478,144 @@
       { id: "slot09", gid: "1333926826" },
       { id: "slot10", gid: "167400982" },
       { id: "slot11", gid: "673193521" }
+      // Adicione novas linhas aqui: { id: "slot12", gid: "NOVO_GID" },
     ];
 
     let dadosEncontrados = null;
+    let gidParaCarregar = "";
+    let modoAcessoDireto = false;
 
-    // Busca nas abas
-    for (const slot of slots) {
-      // URL para download do CSV da aba específica (com t=timestamp para evitar cache)
-      const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${slot.gid}&single=true&output=csv&t=${new Date().getTime()}`;
-
-      try {
-        const response = await fetch(csvUrl);
-        const text = await response.text();
-        const rows = parseCSV(text);
-
-        function getCellVal(r, c) {
-          return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
-        }
-
-        const clientePlanilha = getCellVal(2, 1);
-        const clienteNorm = normalizarTexto(clientePlanilha);
-
-        // Match do cliente
-        if (paramCliente === slot.id || (paramCliente !== "" && (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)))) {
-          dadosEncontrados = {
-            cliente: clientePlanilha,
-            orcamento: getCellVal(3, 1),
-            criterios: getCellVal(4, 1),
-            etapa: getCellVal(5, 1),
-            vistoria: getCellVal(6, 1),
-            c1Name: getCellVal(2, 4), c1Status: getCellVal(2, 5),
-            c2Name: getCellVal(3, 4), c2Status: getCellVal(3, 5),
-            c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
-            obs: getCellVal(18, 0)
-          };
-          break; // Para a busca se encontrar
-        }
-      } catch (err) {
-        console.error("Erro ao carregar slot:", slot.id, err);
+    // 1. DETERMINAR QUAL ABA CARREGAR
+    if (paramCliente === "") {
+      /* MODO ACESSO DIRETO: URL sem parâmetro. Força o carregamento do Slot_0. */
+      gidParaCarregar = GID_PRINCIPAL;
+      modoAcessoDireto = true;
+      console.log("Acesso Direto Detectado. Carregando Slot_0 (GID Principal).");
+    } else {
+      /* MODO ACESSO INDIVIDUAL: Busca o slot correspondente na lista. */
+      const slotMap = slotsIndividuais.find(s => s.id === paramCliente);
+      if (slotMap) {
+        gidParaCarregar = slotMap.gid;
+        console.log(`Acesso Individual Detectado para ${paramCliente}. Carregando GID ${gidParaCarregar}.`);
+      } else {
+        console.log(`Slot ${paramCliente} não encontrado na lista de acessos individuais.`);
       }
     }
 
-    // Se não encontrar dados, exibe tela de erro
-    if (!dadosEncontrados) {
-      document.getElementById('cliente-nome').innerText = "Cliente Não Encontrado";
-      document.getElementById('orcamento-val').innerText = "-";
-      document.getElementById('criterios-val').innerText = "-";
-      document.getElementById('vistoria-status').style.display = 'none';
-      document.getElementById('cars-list').innerHTML = '<div class="car-item-container"><span class="car-name" style="color: var(--text-gold);">Link desativado ou inválido.</span></div>';
-      document.getElementById('obs-text').innerText = "Por favor, verifique o link ou entre em contato para mais informações.";
-      document.getElementById('progresso-pct').innerText = '0%';
-      document.getElementById('progresso-bar').style.width = '0%';
+    // Se não determinamos um GID válido (parâmetro inválido), exibe erro
+    if (gidParaCarregar === "") {
+      exibirErro("Link inválido ou desativado.");
       return;
     }
 
-    // Preenche os dados básicos no novo design imponente
-    document.getElementById('cliente-nome').innerText = dadosEncontrados.cliente || "-";
-    document.getElementById('orcamento-val').innerText = dadosEncontrados.orcamento || "-";
-    document.getElementById('criterios-val').innerText = dadosEncontrados.criterios || "-";
-    document.getElementById('vistoria-status').innerText = dadosEncontrados.vistoria || "Em andamento";
-    document.getElementById('obs-text').innerText = dadosEncontrados.obs || "A busca continua. Nossos especialistas estão monitorando o mercado.";
+    // 2. BUSCAR DADOS NA PLANILHA
+    const csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTyTRyEdutIaD7zX3fwiUxOu_j_U4yzO2OwfaI0Oy_1Keum9q2oHSxSGbsbSzcRuWgrqFaWWsw4PIRJ/pub?gid=${gidParaCarregar}&single=true&output=csv&t=${new Date().getTime()}`;
 
-    // Preenche a lista de carros com badges coloridos e imponentes
-    let carsHtml = '';
+    try {
+      const response = await fetch(csvUrl);
+      const text = await response.text();
+      const rows = parseCSV(text);
+
+      function getCellVal(r, c) {
+        return (rows[r] && rows[r][c]) ? rows[r][c].trim() : "";
+      }
+
+      const clientePlanilha = getCellVal(2, 1);
+      const clienteNorm = normalizarTexto(clientePlanilha);
+
+      // 3. VALIDAR DADOS
+      let validacaoSucesso = false;
+
+      if (modoAcessoDireto) {
+        /* No modo acesso direto ao Slot_0, não validamos nome, apenas carregamos. */
+        validacaoSucesso = true;
+      } else {
+        /* No modo individual, validamos se o nome na aba bate com o parâmetro da busca. */
+        if (clienteNorm.includes(paramCliente) || paramCliente.includes(clienteNorm)) {
+          validacaoSucesso = true;
+        }
+      }
+
+      if (validacaoSucesso) {
+        dadosEncontrados = {
+          cliente: clientePlanilha,
+          orcamento: getCellVal(3, 1),
+          criterios: getCellVal(4, 1),
+          etapa: getCellVal(5, 1),
+          vistoria: getCellVal(6, 1),
+          c1Name: getCellVal(2, 4), c1Status: getCellVal(2, 5),
+          c2Name: getCellVal(3, 4), c2Status: getCellVal(3, 5),
+          c3Name: getCellVal(4, 4), c3Status: getCellVal(4, 5),
+          obs: getCellVal(18, 0)
+        };
+      }
+    } catch (err) {
+      console.error("Erro ao carregar dados do GSheet:", err);
+    }
+
+    // 4. PREENCHER TELA OU EXIBIR ERRO
+    if (dadosEncontrados) {
+      preencherTelaComDados(dadosEncontrados);
+    } else {
+      exibirErro(modoAcessoDireto ? "Erro ao carregar os dados principais." : "Cliente Não Encontrado.");
+    }
+  }
+
+  // Função para preencher os elementos HTML com os dados
+  function preencherTelaComDados(dados) {
+    document.getElementById('cliente-nome').innerText = dados.cliente || "-";
+    document.getElementById('orcamento-val').innerText = dados.orcamento || "-";
+    document.getElementById('criterios-val').innerText = dados.criterios || "-";
     
-    if(dadosEncontrados.c1Name) {
-      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c1Name}</span>${formatCarBadge(dadosEncontrados.c1Status)}</div>`;
+    // Status de Vistoria
+    const vistoriaEl = document.getElementById('vistoria-status');
+    if (vistoriaEl) {
+        vistoriaEl.style.display = 'inline-block'; // Garante que reapareça
+        vistoriaEl.innerText = dados.vistoria || "Em análise";
     }
-    if(dadosEncontrados.c2Name) {
-      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c2Name}</span>${formatCarBadge(dadosEncontrados.c2Status)}</div>`;
-    }
-    if(dadosEncontrados.c3Name) {
-      carsHtml += `<div class="car-item-container"><span class="car-name">${dadosEncontrados.c3Name}</span>${formatCarBadge(dadosEncontrados.c3Status)}</div>`;
-    }
+    
+    document.getElementById('obs-text').innerText = dados.obs || "A busca continua. Nossos especialistas estão monitorando o mercado.";
 
-    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item-container"><span class="car-name">Buscando as melhores opções no mercado...</span></div>';
+    // Lista de carros
+    let carsHtml = '';
+    if(dados.c1Name) carsHtml += `<div class="car-item"><span class="car-name">${dados.c1Name}</span>${formatCarStatus(dados.c1Status)}</div>`;
+    if(dados.c2Name) carsHtml += `<div class="car-item"><span class="car-name">${dados.c2Name}</span>${formatCarStatus(dados.c2Status)}</div>`;
+    if(dados.c3Name) carsHtml += `<div class="car-item"><span class="car-name">${dados.c3Name}</span>${formatCarStatus(dados.c3Status)}</div>`;
+    document.getElementById('cars-list').innerHTML = carsHtml || '<div class="car-item"><span class="car-name">Buscando as melhores opções no mercado...</span></div>';
 
-    // Animação da Barra de Progresso Neon e Atualização Inteligente da Timeline (CORRIGIDO: Reinserido a lógica e o HTML)
-    const currentStep = parseInt(String(dadosEncontrados.etapa).charAt(0)) || 1;
+    // Progresso e Animação
+    const currentStep = parseInt(String(dados.etapa).charAt(0)) || 1;
     const pct = (currentStep / 5) * 100;
-
     document.getElementById('progresso-pct').innerText = pct + '%';
-    // Timeout para gatilhar a animação de preenchimento
-    setTimeout(() => {
-      document.getElementById('progresso-bar').style.width = pct + '%';
-    }, 150);
+    setTimeout(() => { document.getElementById('progresso-bar').style.width = pct + '%'; }, 150);
 
-    // Atualização Inteligente da Timeline Dourada Sóbrida (CORRIGIDO: Lógica reinserida)
+    // Timeline
     for (let i = 1; i <= 5; i++) {
       const el = document.getElementById('step-' + i);
       if(el) {
         el.classList.remove('completed', 'active');
-        if (i < currentStep) {
-          el.classList.add('completed');
-        } else if (i === currentStep) {
-          el.classList.add('active');
-        }
+        if (i < currentStep) el.classList.add('completed');
+        else if (i === currentStep) el.classList.add('active');
       }
     }
   }
 
-  // Inicia o processo de carregamento de dados
+  // Função para exibir mensagem de erro na tela
+  function exibirErro(mensagem) {
+    document.getElementById('cliente-nome').innerText = "Erro";
+    document.getElementById('orcamento-val').innerText = "-";
+    document.getElementById('criterios-val').innerText = "-";
+    
+    const vistoriaEl = document.getElementById('vistoria-status');
+    if (vistoriaEl) { vistoriaEl.style.display = 'none'; }
+    
+    document.getElementById('cars-list').innerHTML = `<div class="car-item"><span class="car-name" style="color: var(--text-gold-light);">${mensagem}</span></div>`;
+    document.getElementById('obs-text').innerText = "Por favor, verifique o link ou tente novamente mais tarde.";
+    document.getElementById('progresso-pct').innerText = '0%';
+    document.getElementById('progresso-bar').style.width = '0%';
+  }
+
+  // Inicia o carregamento
   carregarDadosCSV();
 </script>
 
